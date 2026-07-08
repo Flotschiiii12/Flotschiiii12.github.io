@@ -254,30 +254,33 @@ function finish(){
 
     out.innerHTML = resultHtml;
 
-    // --- Simulation der Datenübertragung und Zertifikat ---
-    // Zertifikat mit Schreibmaschinen-Effekt
-    let certTextElement = document.getElementById('cert');
+    // --- Zertifikat mit Schreibmaschinen-Effekt ---
+    const certTextElement = document.getElementById('cert');
+    certTextElement.textContent = ''; // Sicherstellen, dass es leer ist, bevor die Animation beginnt
     let certAnimationInterval = setInterval(()=>{
         certTextElement.textContent = ct.slice(0, certTextElement.textContent.length + 1);
         if (certTextElement.textContent.length >= ct.length) {
             clearInterval(certAnimationInterval);
+            // Sobald das Zertifikat fertig geschrieben ist, starten wir die Datenübertragung
+            startTransferSimulation();
         }
     }, 15); // Geschwindigkeit der Schreibmaschine
 
-    // Transfer-Simulation
-    let transferText = `📡 Datenübertragung ausstehend...\nVerbinde mit Florian...\n✅ Überprüfe Schmetterlings-Analyse...\n✅ Verpacke Antworten...\n✅ Übertragung bereit ❤️\n\n⚠️ Letzter Schritt erforderlich:\nDie Ergebnisse wurden vorbereitet,\naber noch nicht an Florian gesendet.\nOhne den nächsten Schritt\nbekommt er deine Antworten leider nicht 😇\n👇 Bitte jetzt übertragen 👇`;
-    let j = 0;
-    let transferWriter = setInterval(() => {
-        transfer.textContent = transferText.slice(0, ++j);
-        if (j >= transferText.length) {
-            clearInterval(transferWriter);
+    // --- Funktion zur Simulation der Datenübertragung und Anzeige der Buttons ---
+    function startTransferSimulation() {
+        let transferText = `📡 Datenübertragung ausstehend...\nVerbinde mit Florian...\n✅ Überprüfe Schmetterlings-Analyse...\n✅ Verpacke Antworten...\n✅ Übertragung bereit ❤️\n\n⚠️ Letzter Schritt erforderlich:\nDie Ergebnisse wurden vorbereitet,\naber noch nicht an Florian gesendet.\nOhne den nächsten Schritt\nbekommt er deine Antworten leider nicht 😇\n👇 Bitte jetzt übertragen 👇`;
+        let j = 0;
+        let transferWriter = setInterval(() => {
+            transfer.textContent = transferText.slice(0, ++j);
+            if (j >= transferText.length) {
+                clearInterval(transferWriter);
 
-            // WhatsApp Button (jetzt grün und zentriert dank .wa Klasse)
-            const waLink = `https://api.whatsapp.com/send?phone=4915758309186&text=${encodeURIComponent(msg)}`;
-            transfer.innerHTML += `<br><br><a class="wa" href="${waLink}" target="_blank">📲 Antworten & Date an Florian senden</a>`;
+                // WhatsApp Button (jetzt grün und zentriert dank .wa Klasse)
+                const waLink = `https://api.whatsapp.com/send?phone=4915758309186&text=${encodeURIComponent(msg)}`;
+                transfer.innerHTML += `<br><br><a class="wa" href="${waLink}" target="_blank">📲 Antworten & Date an Florian senden</a>`;
 
-            // Kalender Button
-            transfer.innerHTML += `
+                // Kalender Button
+                transfer.innerHTML += `
 <br><br>
 
 <button
@@ -290,22 +293,23 @@ onclick="saveCalendar()">
 Damit du unser Date nicht vergisst 🥰
 </p>
 `;
-            // --- NEUER BUTTON ZUM DOWNLOAD DES ZERTIFIKATS ALS BILD ---
-            transfer.innerHTML += `
+                // --- NEUER BUTTON ZUM DOWNLOAD DES ZERTIFIKATS ALS BILD ---
+                transfer.innerHTML += `
 <br><br>
 <button class="btn download-btn" id="downloadCertBtn">🖼️ Zertifikat als Bild herunterladen</button>
 `;
-            // Event Listener für den neuen Download-Button hinzufügen
-            document.getElementById('downloadCertBtn').addEventListener('click', downloadCertificateAsImage);
-        }
-    }, 15);
+                // Event Listener für den neuen Download-Button hinzufügen
+                document.getElementById('downloadCertBtn').addEventListener('click', downloadCertificateAsImage);
+            }
+        }, 15);
+    }
 }
 
 // --- Funktion zum Zeichnen des Zertifikats auf ein Canvas ---
 function drawCertificateOnCanvas() {
-    const canvas = document.getElementById('certificateCanvas');
+    // Erstelle ein Canvas-Element, falls es noch nicht existiert
+    let canvas = document.getElementById('certificateCanvas');
     if (!canvas) {
-        // Füge das Canvas-Element dynamisch hinzu, falls es nicht existiert
         canvas = document.createElement('canvas');
         canvas.id = 'certificateCanvas';
         canvas.style.display = 'none'; // Versteckt das Canvas selbst
@@ -319,11 +323,29 @@ function drawCertificateOnCanvas() {
 
     // Canvas-Dimensionen und Styling
     const canvasWidth = 600;
-    const canvasHeight = 800; // Muss angepasst werden, je nach Textmenge
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
+    // Höhe dynamisch anpassen basierend auf dem Inhalt
+    let calculatedHeight = 200; // Grundhöhe
+    const margin = 40;
+    const lineHeight = 35;
+    const titleLineHeight = 45;
+    const answerLineHeight = 30;
+    const smallLineHeight = 25;
 
-    // Hintergrund zeichnen (z.B. ein sanfter Farbverlauf)
+    // Titel
+    calculatedHeight += titleLineHeight * 2;
+    // Datum/Zeit/Aktivität
+    calculatedHeight += lineHeight * 4;
+    // Antworten Titel
+    calculatedHeight += lineHeight;
+    // Antworten Zeilen
+    calculatedHeight += answers.length * answerLineHeight;
+    // Letzte Zeile
+    calculatedHeight += lineHeight;
+
+    canvas.width = canvasWidth;
+    canvas.height = calculatedHeight;
+
+    // Hintergrund zeichnen
     const gradient = ctx.createLinearGradient(0, 0, 0, canvasHeight);
     gradient.addColorStop(0, '#ffc2d1'); // Helles Rosa oben
     gradient.addColorStop(1, '#ff7eb3'); // Dunkleres Rosa unten
@@ -332,22 +354,19 @@ function drawCertificateOnCanvas() {
 
     // Styling für den Text
     ctx.fillStyle = '#fff'; // Weißer Text
-    ctx.font = 'bold 24px Arial';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
 
-    const margin = 40;
-    const lineHeight = 35;
-    let currentY = margin + 50; // Startposition für den Titel
+    let currentY = margin;
 
     // Titel zeichnen
     ctx.font = 'bold 36px Arial';
     ctx.fillText('🏆 OFFIZIELLES DATE-ZERTIFIKAT 🏆', canvasWidth / 2, currentY);
-    currentY += lineHeight * 2;
+    currentY += titleLineHeight * 2;
 
     // Daten zeichnen
     ctx.font = 'bold 20px Arial';
-    ctx.fillStyle = '#fff'; // Weißer Text
+    ctx.fillStyle = '#fff';
     ctx.fillText(`Nadine ✅  Florian ✅`, canvasWidth / 2, currentY);
     currentY += lineHeight;
     ctx.fillText(`📅 Datum: ${calendarData.date}`, canvasWidth / 2, currentY);
@@ -374,11 +393,10 @@ function drawCertificateOnCanvas() {
     ];
 
     answerLines.forEach(line => {
-        // Hier muss die Textbreite geprüft und ggf. umgebrochen werden,
-        // aber für eine einfache Darstellung zeichnen wir sie direkt.
-        // Für komplexere Umbrüche müsste man die Textbreite messen.
+        // Einfacher Textumbruch: Wenn die Zeile zu lang ist, wird sie abgeschnitten oder überlappt.
+        // Für eine korrekte Textumbruchlogik müsste man die Textbreite messen und Zeilen manuell umbrechen.
         ctx.fillText(line, canvasWidth / 2, currentY);
-        currentY += lineHeight;
+        currentY += answerLineHeight;
     });
     currentY += lineHeight;
 
@@ -386,14 +404,16 @@ function drawCertificateOnCanvas() {
     ctx.fillStyle = '#eee';
     ctx.fillText('Nächstes Date dringend empfohlen ❤️', canvasWidth / 2, currentY);
 
-    // Rückgabe des Canvas-Elements, damit es in der Download-Funktion verwendet werden kann
     return canvas;
 }
 
 // --- Funktion zum Herunterladen des Zertifikats als Bild ---
 function downloadCertificateAsImage() {
     const canvas = drawCertificateOnCanvas();
-    if (!canvas) return;
+    if (!canvas) {
+        alert("Konnte das Zertifikat nicht für die Bildgenerierung vorbereiten.");
+        return;
+    }
 
     // Konvertiere Canvas zu PNG Data URL
     const dataURL = canvas.toDataURL('image/png'); // Oder 'image/jpeg'
