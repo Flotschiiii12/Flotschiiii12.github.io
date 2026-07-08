@@ -35,7 +35,6 @@ let answers=[];
 let calendarData = null;
 
 // --- Sanftere Übergänge für Seitenwechsel ---
-// Diese Funktion wurde vereinfacht, um direkt Klassen zu ändern und Animationen zu nutzen.
 function show(a,b){
     const elementA = document.getElementById(a);
     const elementB = document.getElementById(b);
@@ -97,6 +96,8 @@ function renderQ(){
     `;
 
     const questionElement = document.getElementById('q');
+    // --- Klassen zurücksetzen, um Animationen korrekt auszuführen ---
+    questionElement.classList.remove('fade-in', 'fade-out', 'visible');
     questionElement.innerHTML = ''; // Vorherigen Inhalt leeren
 
     let d=qs[qi];
