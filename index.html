@@ -21,8 +21,9 @@ function finish(){let activity=document.getElementById('act').value; if(activity
 let wa='https://api.whatsapp.com/send?phone=4915758309186&text='+encodeURIComponent(msg);
 show('plan','result');
 out.innerHTML='<h2>✅ DATE BESTÄTIGT ❤️</h2>' +
-'<a class="cal" href="#" download="DateMitFlorian.ics
-<div>💌 Kleine Nachricht<br><br>Ich freue mich wirklich immer, wenn wir Zeit miteinander verbringen 😊❤️<br><br>Und falls du es noch nicht gemerkt hast:<br><br>Du hast es geschafft, dass ich diese komplette Webseite für genau eine Person gebaut habe ❤️😇<br><br>(Und ja, das war die Arbeit wert 🥰)</div><div id="cert"></div><div id="transfer" class="left"></div>';
+'<a class="cal" href="#" download="DateMitFlorian.ics">Kalender-Einladung herunterladen</a>' +
+'<div class="wa" onclick="window.location.href=\''+wa+'\'">📲 Antworten & Date an Florian senden</div>' +
+'<div>💌 Kleine Nachricht<br><br>Ich freue mich wirklich immer, wenn wir Zeit miteinander verbringen 😊❤️<br><br>Und falls du es noch nicht gemerkt hast:<br><br>Du hast es geschafft, dass ich diese komplette Webseite für genau eine Person gebaut habe ❤️😇<br><br>(Und ja, das war die Arbeit wert 🥰)</div><div id="cert"></div><div id="transfer" class="left"></div>';
 let ct='🏆 OFFIZIELLES DATE-ZERTIFIKAT\n\nNadine ✅\nFlorian ✅\n\nDatum ✅\nUhrzeit ✅\nAktivität ✅\n\nNächstes Date bestätigt ❤️';let i=0;let c=setInterval(()=>{cert.textContent=ct.slice(0,++i);if(i>=ct.length){clearInterval(c);let transferText =`📡 Datenübertragung ausstehend...Verbinde mit Florian... ✅Überprüfe Schmetterlings-Analyse... ✅Verpacke Antworten... ✅Übertragung bereit ❤️⚠️ Letzter Schritt erforderlich
 Die Ergebnisse wurden vorbereitet,
 aber noch nicht an Florian gesendet.
@@ -38,7 +39,8 @@ let transferWriter = setInterval(() => {
 
         transfer.innerHTML =
             transfer.textContent +
-            '<br><br>">📲 Antworten & Date an Florian senden</a>';
+            '<br><br><a class="wa" href="'+wa+'">📲 Antworten & Date an Florian senden</a>';
     }
 }, 12);
+}}
 </script></body></html>
