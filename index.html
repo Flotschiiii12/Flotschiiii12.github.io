@@ -9,15 +9,23 @@ html,body{margin:0;overflow-x:hidden;font-family:-apple-system, BlinkMacSystemFo
 <div id='questionsIntro' class='center hidden'><h2>Aber bevor wir weitermachen...</h2><p>hier ein paar Fragen 😊</p><button class='btn' onclick='startQuestions()'>Weiter ❤️</button></div>
 <div id='questions' class='hidden left'><div id='progress'></div><div id='q'></div></div>
 <div id='plan' class='hidden center'><h2>Date planen ❤️</h2><input class='field' id='date' type='date'><input class='field' id='time' type='time'>
-<select class='field' id='duration' onchange='toggleOtherActivityField()'>
-    <option value='1'>🍦 Eis essen (ca. 1 Stunde)</option>
-    <option value='2'>🍿 Kino (ca. 2-3 Stunden)</option>
-    <option value='3'>🍝 Essen gehen (ca. 2-3 Stunden)</option>
-    <option value='4'>🌳 Spaziergang (ca. 1 Stunde)</option>
-    <option value='5'>🥾 Wandern (ca. 2-4 Stunden)</option>
-    <option value='6'>🎯 Dart bei dir (ca. 1-2 Stunden)</option>
-    <option value='7'>🏊 Baden (ca. 2-3 Stunden)</option>
-    <option value='99'>✏️ Etwas anderes ... (Open End)</option>
+<select class='field' id='act' onchange='toggleOtherActivityField()'> <!-- Aktivitätsauswahl -->
+    <option>🍦 Eis essen</option>
+    <option>🍿 Kino</option>
+    <option>🍝 Essen gehen</option>
+    <option>🌳 Spaziergang</option>
+    <option>🥾 Wandern</option>
+    <option>🎯 Dart bei dir</option>
+    <option>🏊 Baden</option>
+    <option>🎉 Gemeinsam Feiern</option> <!-- Wieder hinzugefügt -->
+    <option>✏️ Etwas anderes ...</option>
+</select>
+<select class='field' id='duration'> <!-- Dauer-Auswahl -->
+    <option value='1'>ca. 1 Stunde</option>
+    <option value='2'>ca. 2 Stunden</option>
+    <option value='3'>ca. 3 Stunden</option>
+    <option value='4'>ca. 4 Stunden</option>
+    <option value='99'>Open End</option>
 </select>
 <input class='field hidden' id='otherActivity' placeholder='Was hast du im Kopf? ❤️'><button class='btn' onclick='finish()'>Date bestätigen ❤️</button></div>
 <div id='result' class='hidden center'><div id='out'></div></div></div>
@@ -146,15 +154,18 @@ function nextQ(){
         }, { once: true });
     }
 }
-function toggleOther(){
-    const o=document.getElementById('otherActivity');
-    // Prüfe, ob die ausgewählte Option "Etwas anderes..." ist
-    if(document.getElementById('act').value==='✏️ Etwas anderes ...'){ // Annahme: 'act' ist immer noch die ID des Select-Elements für Aktivitäten
-        o.classList.remove('hidden');
-        o.setAttribute('required', '');
+
+// --- Funktion zur Steuerung des "Etwas anderes..." Feldes für Aktivitäten ---
+function toggleOtherActivityField(){
+    const otherActivityInput = document.getElementById('otherActivity');
+    const activitySelect = document.getElementById('act'); // Referenz zum Aktivitäts-Select
+
+    if(activitySelect.value === '✏️ Etwas anderes ...'){
+        otherActivityInput.classList.remove('hidden');
+        otherActivityInput.setAttribute('required', '');
     } else {
-        o.classList.add('hidden');
-        o.removeAttribute('required');
+        otherActivityInput.classList.add('hidden');
+        otherActivityInput.removeAttribute('required');
     }
 }
 
@@ -277,7 +288,7 @@ function saveCalendar(){
 
 
 function finish(){
-    let activity=document.getElementById('act').value; // Aktivität wird immer noch aus dem alten 'act' Select ausgelesen
+    let activity=document.getElementById('act').value; // Aktivität aus dem Select auslesen
     const otherInput = document.getElementById('otherActivity');
     if(activity==='✏️ Etwas anderes ...'){
         if (!otherInput.value.trim()) {
@@ -290,7 +301,7 @@ function finish(){
     let tm=document.getElementById('time').value;
     let duration=document.getElementById('duration').value; // Dauer aus neuem Dropdown auslesen
 
-    if (!d || !tm || !duration) { // Dauer muss auch ausgewählt sein
+    if (!d || !tm || !duration) { // Datum, Zeit und Dauer müssen ausgewählt sein
         alert('Bitte wähle ein Datum, eine Uhrzeit und eine Dauer für unser Date! ❤️');
         return;
     }
@@ -302,7 +313,7 @@ function finish(){
     calendarData = {
         date: d,
         time: tm,
-        activity: activity,
+        activity: activity, // Aktivität speichern
         duration: duration // Dauer speichern
     };
 
