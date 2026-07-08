@@ -29,9 +29,22 @@ html,body{margin:0;overflow-x:hidden;font-family:-apple-system, BlinkMacSystemFo
     background-color: #f9f9f9; /* Leichter Hintergrund, um es von einem echten Input abzuheben */
     color: #555; /* Dunklere Farbe für den Platzhaltertext */
     text-align: center; /* Zentriert den Text */
+    cursor: pointer; /* Zeigt an, dass es klickbar ist */
+}
+/* Stile für die eigentlichen Input-Felder, wenn sie sichtbar sind */
+.field.visible-input {
+    display: block; /* Stellt sicher, dass sie sichtbar sind */
+    width: 90%;
+    max-width: 420px;
+    margin: 10px auto;
+    padding: 12px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    font-size: 16px;
 }
 </style></head><body><div class='card'>
-<div id='intro' class='center'><h1>❤️ Nadine ❤️</h1><p id='intro-text1'>Hi Nadine 😊</p><p id='intro-text2'>Ich möchte dich etwas fragen ❤️</p><p id='intro-text3'><b>Fun Fact:</b><br>Florian hat diese Webseite wahrscheinlich öfter getestet als nötig 😇❤️</p><button class='btn' onclick="show('intro','question')">Weiter ❤️</button></div>
+<div id='intro' class='center'><h1>❤️ Nadine ❤️</h1><p id='intro-text1'>Hi Nadine 😊</p><p id='intro-text2'>Ich möchte dich etwas fragen ❤️</p><button class='btn' onclick="show('intro','question')">Weiter ❤️</button></div>
 <div id='question' class='center hidden'><h2>Möchtest du mit mir unser nächstes Date planen? 🥺</h2><button class='btn' onclick='showAnalysis()'>Ja 😍</button> <button id='noBtn' class='btn btnGray'>Nein 🙈</button></div>
 <div id='analysis' class='hidden left'><div id='txt'></div><br><button id='analysisBtn' class='btn hidden' onclick="show('analysis','stats')">Weiter ❤️</button></div>
 <div id='stats' class='hidden center'><h2>❤️ Statistik</h2><p>🍦 Eis ✅<br>🎱 Billard ✅<br>🥾 Wandern ✅<br>🌳 Spaziergang ✅<br>🍿 Kino ✅</p><p>Fehlgeschlagene Treffen: 0<br><br><b>Erfolgsquote: 100 %</b><br>Weitere Treffen dringend empfohlen ❤️</p><button class='btn' onclick="show('stats','questionsIntro')">Weiter ❤️</button></div>
@@ -78,6 +91,8 @@ let calendarData = null;
 function animateText(elementId, text, delay = 15, callback) {
     const element = document.getElementById(elementId);
     if (!element) {
+        // Wenn das Element nicht gefunden wird, rufe den Callback sofort auf, falls vorhanden.
+        // Dies verhindert Fehler, falls ein Element aus irgendeinem Grund fehlt.
         if (callback) callback();
         return;
     }
@@ -125,13 +140,14 @@ function show(a,b){
 function animateIntroTexts() {
     const text1 = 'Hi Nadine 😊';
     const text2 = 'Ich möchte dich etwas fragen ❤️';
-    const text3 = '<b>Fun Fact:</b><br>Florian hat diese Webseite wahrscheinlich öfter getestet als nötig 😇❤️';
 
-    animateText('intro-text1', text1, 25, () => { // Etwas langsamer für den ersten Text
-        animateText('intro-text2', text2, 20, () => { // Mittlere Geschwindigkeit
-            animateText('intro-text3', text3, 15); // Schnellere Geschwindigkeit für den Fun Fact
+    // Verwende setTimeout, um sicherzustellen, dass die Elemente im DOM sind, bevor die Animation beginnt.
+    // Dies ist besonders wichtig, wenn die show-Funktion die Elemente gerade erst sichtbar gemacht hat.
+    setTimeout(() => {
+        animateText('intro-text1', text1, 25, () => { // Etwas langsamer für den ersten Text
+            animateText('intro-text2', text2, 20); // Mittlere Geschwindigkeit
         });
-    });
+    }, 100); // Kleine Verzögerung, um sicherzustellen, dass alles gerendert ist
 }
 
 
@@ -250,7 +266,7 @@ function nextQ(){
         }, { once: true });
     }
     else {
-        // Warte auf das Ende der Transition, bevor zum Planungsbereich gewechselt wird
+        // Warte auf das Ende der Transition, bevor zum Planungsbereich gewechlt wird
         questionElement.addEventListener('transitionend', function handler() {
             show('questions','plan');
             questionElement.removeEventListener('transitionend', handler);
@@ -489,37 +505,48 @@ Damit du unser Date nicht vergisst 🥰
     }
 }
 
-// --- NEUE FUNKTION: Datum und Uhrzeit als Text anzeigen und Input verstecken ---
+// --- NEUE FUNKTION: Datum und Uhrzeit als Text anzeigen und Input verstecken/anzeigen ---
 function updateDateTimeDisplay() {
     const dateInput = document.getElementById('date');
     const timeInput = document.getElementById('time');
     const dateTextSpan = document.getElementById('date-text');
     const timeTextSpan = document.getElementById('time-text');
 
+    // Datum
     if (dateInput.value) {
-        // Datum wurde ausgewählt
         dateTextSpan.textContent = `Datum: ${dateInput.value}`;
         dateTextSpan.classList.add('hidden'); // Text ausblenden
         dateInput.classList.remove('hidden'); // Input anzeigen
-        dateInput.classList.add('field'); // Sicherstellen, dass es wie ein Feld aussieht
+        dateInput.classList.add('visible-input'); // Neue Klasse für sichtbare Inputs
     } else {
-        // Kein Datum ausgewählt
         dateTextSpan.textContent = 'Datum auswählen';
         dateTextSpan.classList.remove('hidden'); // Text anzeigen
         dateInput.classList.add('hidden'); // Input ausblenden
     }
 
+    // Uhrzeit
     if (timeInput.value) {
-        // Uhrzeit wurde ausgewählt
         timeTextSpan.textContent = `Uhrzeit: ${timeInput.value}`;
         timeTextSpan.classList.add('hidden'); // Text ausblenden
         timeInput.classList.remove('hidden'); // Input anzeigen
-        timeInput.classList.add('field'); // Sicherstellen, dass es wie ein Feld aussieht
+        timeInput.classList.add('visible-input'); // Neue Klasse für sichtbare Inputs
     } else {
-        // Keine Uhrzeit ausgewählt
         timeTextSpan.textContent = 'Uhrzeit auswählen';
         timeTextSpan.classList.remove('hidden'); // Text anzeigen
         timeInput.classList.add('hidden'); // Input ausblenden
+    }
+}
+
+// --- Funktion, die das Eingabefeld anzeigt, wenn auf den Text geklickt wird ---
+function showInput(inputId) {
+    const textSpan = document.getElementById(inputId + '-text');
+    const inputField = document.getElementById(inputId);
+
+    if (textSpan && inputField) {
+        textSpan.classList.add('hidden'); // Text ausblenden
+        inputField.classList.remove('hidden'); // Input anzeigen
+        inputField.classList.add('visible-input'); // Sichtbarkeit sicherstellen
+        inputField.focus(); // Fokus auf das Eingabefeld setzen
     }
 }
 
@@ -527,11 +554,17 @@ function updateDateTimeDisplay() {
 document.addEventListener('DOMContentLoaded', () => {
     const dateInput = document.getElementById('date');
     const timeInput = document.getElementById('time');
+    const dateTextSpan = document.getElementById('date-text');
+    const timeTextSpan = document.getElementById('time-text');
 
     // Initialen Zustand setzen
     updateDateTimeDisplay();
 
-    // Listener hinzufügen, die bei Änderung aufgerufen werden
+    // Listener für Klicks auf die Text-Spans hinzufügen
+    dateTextSpan.addEventListener('click', () => showInput('date'));
+    timeTextSpan.addEventListener('click', () => showInput('time'));
+
+    // Listener hinzufügen, die bei Änderung aufgerufen werden (um den Text zu aktualisieren)
     dateInput.addEventListener('change', updateDateTimeDisplay);
     timeInput.addEventListener('change', updateDateTimeDisplay);
 
