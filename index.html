@@ -300,7 +300,7 @@ function nextQ(){
         }, { once: true });
     }
     else {
-        // Warte auf das Ende der Animation, bevor zum Planungsbereich gewechselt wird
+        // Warte auf das Ende der Animation, bevor zum Planungsbereich gewechlt wird
         questionElement.addEventListener('animationend', function handler() { // <-- Ersetzt transitionend durch animationend
             show('questions','plan');
             questionElement.removeEventListener('animationend', handler);
