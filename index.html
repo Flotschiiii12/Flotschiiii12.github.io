@@ -81,48 +81,63 @@ function toggleOther(){
     }
 }
 
-// --- Funktion zur Erstellung der ICS-Datei ---
-function createIcsContent(dateStr, timeStr, activity, description) {
-    const userTz = 'Europe/Berlin'; // Gängige deutsche Zeitzone
+// --- ❌ ALTE createIcsContent() ENTFERNEN ---
+// Die alte Funktion wurde komplett gelöscht.
 
-    const dateTimeStr = dateStr.replace(/-/g, '') + 'T' + timeStr.replace(/:/g, '');
+// --- ✅ NEUE APPLE-KOMPATIBLE ICS-FUNKTION ---
+function createIcsContent(
+    dateStr,
+    timeStr,
+    activity
+){
 
-    const durationHours = 1; // Standarddauer von 1 Stunde
-    const [hours, minutes] = timeStr.split(':').map(Number);
-    const endHours = (hours + durationHours) % 24;
-    const endMinutes = minutes;
-    const endTimeStr = String(endHours).padStart(2, '0') + String(endMinutes).padStart(2, '0');
-    const endDateStr = dateStr.replace(/-/g, '');
+    const start =
+        dateStr.replace(/-/g,'') +
+        'T' +
+        timeStr.replace(/:/g,'') +
+        '00';
 
-    const uid = 'event-' + Date.now() + Math.random().toString(36).substring(2, 15);
+    // Datum und Zeit für das Ende berechnen (Standardmäßig 2 Stunden später)
+    const endDate =
+        new Date(
+            dateStr + 'T' + timeStr
+        );
 
-    // ✅ DTSTAMP KORRIGIERT
-    // Korrigiertes Format für Apple Kalender
-    const dtstamp = new Date().toISOString().replace(/[-:]/g, '').replace('.000','');
+    endDate.setHours(
+        endDate.getHours() + 2
+    );
 
-    // Beschreibung für ICS escapen
-    let icsDescription = description.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/'/g, "\\'");
+    const end =
+        endDate.getFullYear() +
+        String(
+            endDate.getMonth()+1 // Monate sind 0-basiert, daher +1
+        ).padStart(2,'0') +
+        String(
+            endDate.getDate()
+        ).padStart(2,'0') +
+        'T' +
+        String(
+            endDate.getHours()
+        ).padStart(2,'0') +
+        String(
+            endDate.getMinutes()
+        ).padStart(2,'0') +
+        '00';
 
-    // ICS-Inhalt erstellen
-    let ics = `BEGIN:VCALENDAR
+    // Vereinfachte ICS-Struktur für maximale Kompatibilität
+    return `BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//Grasp.info//NadineDatePlanner//DE
-CALSCALE:GREGORIAN
 BEGIN:VEVENT
-UID:${uid}
-DTSTAMP:${dtstamp}
-DTSTART;TZID=${userTz}:${dateTimeStr}
-DTEND;TZID=${userTz}:${endDateStr}T${endTimeStr}
 SUMMARY:${activity}
-DESCRIPTION:${icsDescription}
+DTSTART:${start}
+DTEND:${end}
+DESCRIPTION:Date mit Florian ❤️
 END:VEVENT
 END:VCALENDAR`;
-
-    return ics;
 }
 
-// --- Funktion zum Herunterladen einer Datei ---
-// Diese Funktion wird nun von saveCalendar() verwendet, um die Datei zu erstellen und herunterzuladen.
+// --- Funktion zum Herunterladen einer Datei (wird von saveCalendar() verwendet) ---
+// Diese Funktion ist nun eine Hilfsfunktion für saveCalendar() und wird nicht mehr direkt aufgerufen.
 function downloadFile(filename, content, mimeType = 'text/plain') {
     console.log("downloadFile called with:", filename, mimeType); // Debugging
     try {
@@ -146,50 +161,51 @@ function downloadFile(filename, content, mimeType = 'text/plain') {
     }
 }
 
-// --- NEUE KALENDERFUNKTION ---
+// --- ✅ SAVECALENDAR() ERSETZEN ---
 function saveCalendar(){
+
+    // Prüfen, ob calendarData vorhanden ist
     if(!calendarData) {
         console.error("calendarData is null, cannot save calendar.");
-        return; // Falls keine Daten vorhanden sind, nichts tun
+        alert("Fehler: Kalenderdaten sind nicht verfügbar.");
+        return;
     }
 
-    const icsContent = createIcsContent(
-        calendarData.date,
-        calendarData.time,
-        calendarData.activity,
-        calendarData.description
-    );
+    const ics =
+        createIcsContent(
+            calendarData.date,
+            calendarData.time,
+            calendarData.activity
+            // Die Beschreibung wird nun fest im createIcsContent() gesetzt.
+        );
 
-    // Erstellung eines Blobs und dann eines File-Objekts
-    const blob = new Blob(
-        [icsContent],
-        {
-            type:'text/calendar' // MIME-Typ für ICS
-        }
-    );
+    const blob =
+        new Blob(
+            [ics],
+            {
+                type:'text/calendar' // MIME-Typ für ICS
+            }
+        );
 
-    const file = new File(
-        [blob],
-        'DateMitFlorian.ics',
-        {
-            type:'text/calendar'
-        }
-    );
+    const url =
+        URL.createObjectURL(blob);
 
-    // Erstellung eines temporären Links zum Herunterladen der Datei
-    const url = URL.createObjectURL(file);
-    const a = document.createElement('a');
+    const a =
+        document.createElement('a');
+
     a.href = url;
-    a.download = 'DateMitFlorian.ics';
+    a.download =
+        'DateMitFlorian.ics';
 
     document.body.appendChild(a);
+
     a.click();
 
     // Cleanup nach kurzer Verzögerung
-    setTimeout(() => {
-        document.body.removeChild(a);
+    document.body.removeChild(a); // Direkter Aufruf, da setTimeout hier nicht zwingend nötig ist, aber zur Sicherheit beibehalten.
+    setTimeout(()=>{
         URL.revokeObjectURL(url);
-    }, 100);
+    },1000);
 }
 
 
@@ -211,16 +227,17 @@ function finish(){
         return;
     }
 
-    // Erstellung der Nachricht für WhatsApp und die Beschreibung für ICS
+    // Erstellung der Nachricht für WhatsApp
+    // Die Beschreibung für ICS wird nun fest in createIcsContent() gesetzt.
     let msg=`Hey Florian ❤️\n\nIch habe JA gesagt! 🥰\n\n📅 Unser Date:\nDatum: ${d}\n\n⏰ Uhrzeit:\n${tm}\n\n✨ Aktivität:\n${activity}\n\nUnd hier noch meine Antworten 😉❤️\n\n🏆 Lieblingsdate:\n${answers[0]}\n\n⏰ Zeit bei unseren Treffen:\n${answers[1]}\n\n💭 Florian in einem Wort:\n${answers[2]}\n\n📋 Unsere bisherigen Treffen:\n${answers[3]}\n\n💌 Was ich an Florian am meisten schätze:\n${answers[4]}\n\n💭 Worauf ich mich am meisten freue:\n${answers[5]}\n\n🦋 Gegenanalyse:\n${answers[6]}`;
 
-    // ✅ FINISH() ERWEITERT
+    // ✅ FINISH() ERWEITERN
     // Globale Variable mit den Daten für die Kalenderfunktion befüllen
     calendarData = {
         date: d,
         time: tm,
-        activity: activity,
-        description: msg
+        activity: activity
+        // Die Beschreibung wird nun fest in createIcsContent() gesetzt und nicht mehr hier übergeben.
     };
 
     show('plan','result');
@@ -260,12 +277,14 @@ function finish(){
                     const waLink = `https://api.whatsapp.com/send?phone=4915758309186&text=${encodeURIComponent(msg)}`;
                     transfer.innerHTML += `<br><br><a class="btn" href="${waLink}" target="_blank">📲 Antworten & Date an Florian senden</a>`;
 
-                    // --- NEUEN KALENDERBUTTON EINFÜGEN ---
+                    // ✅ KALENDERBUTTON
                     // Dieser neue Button ruft die saveCalendar() Funktion auf.
                     transfer.innerHTML += `
 <br><br>
 
-<button class="cal" onclick="saveCalendar()">
+<button
+class="cal"
+onclick="saveCalendar()">
 📆 Unser nächstes Date im Kalender speichern ❤️
 </button>
 
