@@ -54,6 +54,23 @@ html,body{margin:0;overflow-x:hidden;font-family:-apple-system, BlinkMacSystemFo
     opacity: 1;
     transform: translateY(0);
 }
+/* Stile für die Elemente auf der Ergebnis-Seite zur Animation */
+.result-item {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+.result-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+/* Spezifische Stile für die Buttons, um sicherzustellen, dass sie zentriert sind */
+.wa, .cal {
+    display: block; /* Stellt sicher, dass sie als Block-Elemente behandelt werden */
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center; /* Zentriert den Text innerhalb des Buttons */
+}
 </style></head><body><div class='card'>
 <div id='intro' class='center'><h1>❤️ Nadine ❤️</h1><p id='intro-text1'>Hi Nadine 😊</p><p id='intro-text2'>Ich möchte dich etwas fragen ❤️</p><button class='btn' onclick="show('intro','question')">Weiter ❤️</button></div>
 <div id='question' class='center hidden'><h2>Möchtest du mit mir unser nächstes Date planen? 🥺</h2><button class='btn' onclick='showAnalysis()'>Ja 😍</button> <button id='noBtn' class='btn btnGray'>Nein 🙈</button></div>
@@ -104,7 +121,11 @@ html,body{margin:0;overflow-x:hidden;font-family:-apple-system, BlinkMacSystemFo
     <option value='99'>Open End</option>
 </select>
 <input class='field hidden' id='otherActivity' placeholder='Was hast du im Kopf? ❤️'><button class='btn' onclick='finish()'>Date bestätigen ❤️</button></div>
-<div id='result' class='hidden center'><div id='out'></div></div></div>
+<div id='result' class='hidden center'>
+    <div id='out'>
+        <!-- Die Elemente werden hier dynamisch von der finish()-Funktion eingefügt -->
+    </div>
+</div></div>
 <script>
 let answers=[];
 // ✅ KALENDERDATEN GLOBAL SPEICHERN
@@ -158,6 +179,10 @@ function show(a,b){
             // --- NEU: Animationen für Statistik-Texte starten, wenn #stats sichtbar wird ---
             if (b === 'stats') {
                 animateStats();
+            }
+            // --- NEU: Animationen für Ergebnis-Texte starten, wenn #result sichtbar wird ---
+            if (b === 'result') {
+                animateResultPage();
             }
         }, 50);
     }, { once: true });
@@ -225,11 +250,28 @@ function animateStats() {
         if (element) {
             // Verwenden von setTimeout, um die Animationen nacheinander zu starten
             setTimeout(() => {
-                // Hier verwenden wir eine einfache Fade-In-Animation durch Hinzufügen einer Klasse
-                // Alternativ könnte man hier auch animateText verwenden, wenn ein Schreibmaschinen-Effekt gewünscht ist.
-                // Für Statistiken ist ein Fade-In oft besser lesbar.
                 element.classList.add('visible');
             }, index * delayBetweenItems);
+        }
+    });
+}
+
+// --- Funktion zum Animieren der Elemente auf der Ergebnis-Seite ---
+function animateResultPage() {
+    const resultElements = [
+        'result-title', // Die Überschrift
+        'result-message', // Die kleine Nachricht
+        'cert', // Das Zertifikat
+        'transfer' // Die Datenübertragung
+    ];
+    const delayBetweenElements = 150; // Verzögerung zwischen den Elementen
+
+    resultElements.forEach((elementId, index) => { // elementClassOrId umbenannt zu elementId für Klarheit
+        const element = document.getElementById(elementId);
+        if (element) {
+            setTimeout(() => {
+                element.classList.add('visible');
+            }, index * delayBetweenElements);
         }
     });
 }
@@ -488,30 +530,33 @@ function finish(){
 
     show('plan','result');
 
-    let resultHtml = `<h2>✅ DATE BESTÄTIGT ❤️</h2>`;
-
-    // --- Kleine Nachricht ---
-    resultHtml += `<div class="left-aligned-in-center">
-        <h3>💌 Kleine Nachricht</h3>
-        <br>
-        Ich freue mich wirklich immer, wenn wir Zeit miteinander verbringen 😊❤️<br><br>
-        Und falls du es noch nicht gemerkt hast:<br><br>
-        Du hast es geschafft, dass ich diese komplette Webseite für genau eine Person gebaut habe ❤️😇<br><br>
-        (Und ja, das war die Arbeit wert 🥰)
-    </div>`;
+    // --- Erstelle das Ergebnis-HTML dynamisch ---
+    let resultHtml = `
+        <div id="result-title" class="result-item"><h2>✅ DATE BESTÄTIGT ❤️</h2></div>
+        <div id='result-message' class='left-aligned-in-center result-item'>
+            <h3>💌 Kleine Nachricht</h3>
+            <br>
+            Ich freue mich wirklich immer, wenn wir Zeit miteinander verbringen 😊❤️<br><br>
+            Und falls du es noch nicht gemerkt hast:<br><br>
+            Du hast es geschafft, dass ich diese komplette Webseite für genau eine Person gebaut habe ❤️😇<br><br>
+            (Und ja, das war die Arbeit wert 🥰)
+        </div>
+    `;
 
     // --- Date-Zertifikat ---
-    let ct='🏆 OFFIZIELLES DATE-ZERTIFIKAT\n\nNadine ✅\nFlorian ✅\n\n📅 Datum: ' + d + '\n⏰ Uhrzeit: ' + tm + '\n✨ Aktivität: ' + activity + '\n⏳ Dauer: ' + (duration === '99' ? 'Open End' : duration + ' Stunde(n)') + '\n\n--- Deine Antworten ---\n🏆 Lieblingsdate: ' + answers[0] + '\n⏰ Zeitgefühl: ' + answers[1] + '\n💭 Florian in einem Wort: ' + answers[2] + '\n📋 Treffen beschreiben: ' + answers[3] + '\n💌 Was du schätzt: ' + answers[4] + '\n💭 Worauf du dich freust: ' + answers[5] + '\n🦋 Gegenanalyse: ' + answers[6] + '\n\nNächstes Date bestätigt ❤️';
-    resultHtml += `<div id="cert" class="cert-text"></div>`; // Zertifikatstext wird hier eingefügt
+    let ct = '🏆 OFFIZIELLES DATE-ZERTIFIKAT\n\nNadine ✅\nFlorian ✅\n\n📅 Datum: ' + d + '\n⏰ Uhrzeit: ' + tm + '\n✨ Aktivität: ' + activity + '\n⏳ Dauer: ' + (duration === '99' ? 'Open End' : duration + ' Stunde(n)') + '\n\n--- Deine Antworten ---\n🏆 Lieblingsdate: ' + answers[0] + '\n⏰ Zeitgefühl: ' + answers[1] + '\n💭 Florian in einem Wort: ' + answers[2] + '\n📋 Treffen beschreiben: ' + answers[3] + '\n💌 Was du schätzt: ' + answers[4] + '\n💭 Worauf du dich freust: ' + answers[5] + '\n🦋 Gegenanalyse: ' + answers[6] + '\n\nNächstes Date bestätigt ❤️';
+    resultHtml += `<div id="cert" class="cert-text result-item"></div>`; // Zertifikatstext wird hier eingefügt
 
-    resultHtml += `<div id="transfer" class="left"></div>`; // Platzhalter für die simulierte Übertragung
+    // --- Simulierte Datenübertragung ---
+    resultHtml += `<div id="transfer" class="left result-item"></div>`; // Platzhalter für die simulierte Übertragung
 
-    out.innerHTML = resultHtml;
+    // Füge das gesamte HTML in den 'out'-Container ein
+    document.getElementById('out').innerHTML = resultHtml;
 
     // --- Zertifikat mit Schreibmaschinen-Effekt ---
     const certTextElement = document.getElementById('cert');
     certTextElement.textContent = ''; // Sicherstellen, dass es leer ist, bevor die Animation beginnt
-    let certAnimationInterval = setInterval(()=>{
+    let certAnimationInterval = setInterval(() => {
         certTextElement.textContent = ct.slice(0, certTextElement.textContent.length + 1);
         if (certTextElement.textContent.length >= ct.length) {
             clearInterval(certAnimationInterval);
@@ -554,73 +599,4 @@ Damit du unser Date nicht vergisst 🥰
         }, 15);
     }
 }
-
-// --- NEUE FUNKTION: Datum und Uhrzeit als Text anzeigen und Input verstecken/anzeigen ---
-function updateDateTimeDisplay() {
-    const dateInput = document.getElementById('date');
-    const timeInput = document.getElementById('time');
-    const dateTextSpan = document.getElementById('date-text');
-    const timeTextSpan = document.getElementById('time-text');
-
-    // Datum
-    if (dateInput.value) {
-        dateTextSpan.textContent = `Datum: ${dateInput.value}`;
-        dateTextSpan.classList.add('hidden'); // Text ausblenden
-        dateInput.classList.remove('hidden'); // Input anzeigen
-        dateInput.classList.add('visible-input'); // Neue Klasse für sichtbare Inputs
-    } else {
-        dateTextSpan.textContent = 'Datum auswählen';
-        dateTextSpan.classList.remove('hidden'); // Text anzeigen
-        dateInput.classList.add('hidden'); // Input ausblenden
-    }
-
-    // Uhrzeit
-    if (timeInput.value) {
-        timeTextSpan.textContent = `Uhrzeit: ${timeInput.value}`;
-        timeTextSpan.classList.add('hidden'); // Text ausblenden
-        timeInput.classList.remove('hidden'); // Input anzeigen
-        timeInput.classList.add('visible-input'); // Neue Klasse für sichtbare Inputs
-    } else {
-        timeTextSpan.textContent = 'Uhrzeit auswählen';
-        timeTextSpan.classList.remove('hidden'); // Text anzeigen
-        timeInput.classList.add('hidden'); // Input ausblenden
-    }
-}
-
-// --- Funktion, die das Eingabefeld anzeigt, wenn auf den Text geklickt wird ---
-function showInput(inputId) {
-    const textSpan = document.getElementById(inputId + '-text');
-    const inputField = document.getElementById(inputId);
-
-    if (textSpan && inputField) {
-        textSpan.classList.add('hidden'); // Text ausblenden
-        inputField.classList.remove('hidden'); // Input anzeigen
-        inputField.classList.add('visible-input'); // Sichtbarkeit sicherstellen
-        inputField.focus(); // Fokus auf das Eingabefeld setzen
-    }
-}
-
-// --- Event Listener für Datum und Uhrzeit ---
-document.addEventListener('DOMContentLoaded', () => {
-    const dateInput = document.getElementById('date');
-    const timeInput = document.getElementById('time');
-    const dateTextSpan = document.getElementById('date-text');
-    const timeTextSpan = document.getElementById('time-text');
-
-    // Initialen Zustand setzen
-    updateDateTimeDisplay();
-
-    // Listener für Klicks auf die Text-Spans hinzufügen
-    dateTextSpan.addEventListener('click', () => showInput('date'));
-    timeTextSpan.addEventListener('click', () => showInput('time'));
-
-    // Listener hinzufügen, die bei Änderung aufgerufen werden (um den Text zu aktualisieren)
-    dateInput.addEventListener('change', updateDateTimeDisplay);
-    timeInput.addEventListener('change', updateDateTimeDisplay);
-
-    // --- Initialen Intro-Text-Animationsstart ---
-    // Wir rufen animateIntroTexts direkt auf, da das Intro-Element beim Laden der Seite sichtbar ist.
-    animateIntroTexts();
-});
-
 </script></body></html>
