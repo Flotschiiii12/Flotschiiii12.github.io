@@ -127,78 +127,91 @@ function bestaetigen(){
 }
 </script>
 <script>
-function confirmDate(){
 
-    let d = document.getElementById('date').value;
-    let t = document.getElementById('time').value;
-    let a = document.getElementById('activity').value;
+function zeigeFormular(){
+    document.getElementById("start").classList.add("hidden");
+    document.getElementById("formular").classList.remove("hidden");
+}
 
-    if(!d || !t){
-        alert('Bitte Datum und Uhrzeit wählen ❤️');
+function bestaetigen(){
+
+    const datum = document.getElementById("datum").value;
+    const uhrzeit = document.getElementById("uhrzeit").value;
+    const aktivitaet = document.getElementById("aktivitaet").value;
+
+    if(!datum || !uhrzeit){
+        alert("Bitte Datum und Uhrzeit auswählen.");
         return;
     }
 
-    let start = new Date(d + 'T' + t);
-    let end = new Date(start.getTime() + 7200000);
+    const start = new Date(datum + "T" + uhrzeit);
+    const ende = new Date(start.getTime() + 2 * 60 * 60 * 1000);
 
-    let fmt = x =>
-        x.toISOString()
-         .replace(/[-:]/g,'')
-         .split('.')[0] + 'Z';
+    const formatICS = (d) => {
+        return d.toISOString()
+            .replace(/[-:]/g,"")
+            .split(".")[0] + "Z";
+    };
 
-    let ics =
+    const ics =
 `BEGIN:VCALENDAR
 VERSION:2.0
 BEGIN:VEVENT
 SUMMARY:Date mit Florian ❤️
-DESCRIPTION:${a}
-DTSTART:${fmt(start)}
-DTEND:${fmt(end)}
+DESCRIPTION:${aktivitaet}
+DTSTART:${formatICS(start)}
+DTEND:${formatICS(ende)}
 END:VEVENT
 END:VCALENDAR`;
 
-    let blob =
-        new Blob([ics], {type:'text/calendar'});
+    const blob = new Blob([ics], {
+        type: "text/calendar"
+    });
 
-    let url =
+    const kalenderUrl =
         URL.createObjectURL(blob);
-
-    document.getElementById('step2')
-        .classList.add('hidden');
-
-    document.getElementById('step3')
-        .classList.remove('hidden');
-
-    document.getElementById('summary').innerHTML =
-        '📅 ' + d +
-        '<br>⏰ ' + t +
-        '<br>✨ ' + a;
 
     const nachricht =
 `Hey Florian ❤️
 
 Ich habe JA gesagt! 🥰
 
-📅 ${d}
-⏰ ${t}
-✨ ${a}
+📅 ${datum}
+⏰ ${uhrzeit}
+✨ ${aktivitaet}
 
 Ich freue mich schon ❤️`;
 
-    document.getElementById('calendar').innerHTML =
+    const whatsappLink =
+        "https://api.whatsapp.com/send?phone=4915758309186&text=" +
+        encodeURIComponent(nachricht);
 
-        '<a class="btn" ' +
-        'download="DateMitFlorian.ics" ' +
-        'href="' + url + '">' +
+    document.getElementById("formular")
+        .classList.add("hidden");
+
+    document.getElementById("ergebnis")
+        .classList.remove("hidden");
+
+    document.getElementById("ausgabe").innerHTML =
+        "📅 " + datum + "<br>" +
+        "⏰ " + uhrzeit + "<br>" +
+        "✨ " + aktivitaet +
+        "<br><br>" +
+
+        '<a href="' + kalenderUrl + '" download="DateMitFlorian.ics" ' +
+        'style="display:inline-block;background:#4285F4;color:white;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:bold;margin-bottom:10px;">' +
         '📅 Kalender hinzufügen' +
         '</a>' +
 
         '<br><br>' +
 
-        'https://wa.me/4915758309186?text=';
-
-    hearts(80);
+        '<a href="' + whatsappLink + '" ' +
+        'style="display:inline-block;background:#25D366;color:white;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:bold;">' +
+        '📲 Antwort per WhatsApp senden' +
+        '</a>';
 }
+
+</script>
 </script>
 </body>
 </html>
