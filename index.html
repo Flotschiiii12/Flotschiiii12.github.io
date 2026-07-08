@@ -70,23 +70,22 @@ Ja 😍
 <input type="time" id="uhrzeit">
 
 <select id="aktivitaet" onchange="toggleCustomActivity()">
-    <option>Café ☕</option>
-    <option>Kino 🍿</option>
-    <option>Essen gehen 🍝</option>
-    <option>Spaziergang 🌳</option>
-    <option>Dart bei dir 🎯</option>
-    <option>Baden 🏊</option>
-    <option>Gemeinsam Feiern 🎉</option>
-    <option value="custom">Etwas anderes ... ✏️</option>
+    <option value="Café ☕">Café ☕</option>
+    <option value="Kino 🍿">Kino 🍿</option>
+    <option value="Essen gehen 🍝">Essen gehen 🍝</option>
+    <option value="Spaziergang 🌳">Spaziergang 🌳</option>
+    <option value="Dart bei dir 🎯">Dart bei dir 🎯</option>
+    <option value="Baden 🏊">Baden 🏊</option>
+    <option value="Gemeinsam Feiern 🎉">Gemeinsam Feiern 🎉</option>
+    <option value="custom">✏️ Etwas anderes ...</option>
 </select>
 
 <input
     type="text"
     id="customActivity"
-    placeholder="Deine Idee ❤️"
-    style="display:none;"
+    placeholder="Deine eigene Idee ❤️"
+    class="hidden"
 >
-
 
 <br><br>
 
@@ -109,7 +108,21 @@ function zeigeFormular(){
     document.getElementById("start").classList.add("hidden");
     document.getElementById("formular").classList.remove("hidden");
 }
+function toggleCustomActivity(){
 
+    const select =
+        document.getElementById("aktivitaet");
+
+    const input =
+        document.getElementById("customActivity");
+
+    if(select.value === "custom"){
+        input.classList.remove("hidden");
+    }
+    else{
+        input.classList.add("hidden");
+    }
+}
 function bestaetigen(){
 
     const datum =
@@ -147,23 +160,45 @@ function zeigeFormular(){
 
 function bestaetigen(){
 
-    const datum = document.getElementById("datum").value;
-    const uhrzeit = document.getElementById("uhrzeit").value;
-    const aktivitaet = document.getElementById("aktivitaet").value;
+function bestaetigen(){
+
+    const datum =
+        document.getElementById("datum").value;
+
+    const uhrzeit =
+        document.getElementById("uhrzeit").value;
+
+    let aktivitaet =
+        document.getElementById("aktivitaet").value;
+
+    if(aktivitaet === "custom"){
+
+        aktivitaet =
+            document.getElementById("customActivity")
+            .value
+            .trim();
+
+        if(!aktivitaet){
+            alert("Bitte eine eigene Idee eingeben ❤️");
+            return;
+        }
+    }
 
     if(!datum || !uhrzeit){
         alert("Bitte Datum und Uhrzeit auswählen.");
         return;
     }
 
-    const start = new Date(datum + "T" + uhrzeit);
-    const ende = new Date(start.getTime() + 2 * 60 * 60 * 1000);
+    const start =
+        new Date(datum + "T" + uhrzeit);
 
-    const formatICS = (d) => {
-        return d.toISOString()
-            .replace(/[-:]/g,"")
-            .split(".")[0] + "Z";
-    };
+    const ende =
+        new Date(start.getTime() + 7200000);
+
+    const formatICS = (d) =>
+        d.toISOString()
+         .replace(/[-:]/g,"")
+         .split(".")[0] + "Z";
 
     const ics =
 `BEGIN:VCALENDAR
@@ -176,9 +211,10 @@ DTEND:${formatICS(ende)}
 END:VEVENT
 END:VCALENDAR`;
 
-    const blob = new Blob([ics], {
-        type: "text/calendar"
-    });
+    const blob =
+        new Blob([ics],{
+            type:"text/calendar"
+        });
 
     const kalenderUrl =
         URL.createObjectURL(blob);
@@ -205,24 +241,23 @@ Ich freue mich schon ❤️`;
         .classList.remove("hidden");
 
     document.getElementById("ausgabe").innerHTML =
-        "📅 " + datum + "<br>" +
-        "⏰ " + uhrzeit + "<br>" +
-        "✨ " + aktivitaet +
+
+        "📅 " + datum +
+        "<br>⏰ " + uhrzeit +
+        "<br>✨ " + aktivitaet +
+
         "<br><br>" +
 
-        '<a href="' + kalenderUrl + '" download="DateMitFlorian.ics" ' +
-        'style="display:inline-block;background:#4285F4;color:white;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:bold;margin-bottom:10px;">' +
-        '📅 Kalender hinzufügen' +
-        '</a>' +
+        '' + kalenderUrl + ''
 
-        '<br><br>' +
+        +
 
-        '<a href="' + whatsappLink + '" ' +
-        'style="display:inline-block;background:#25D366;color:white;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:bold;">' +
-        '📲 Antwort per WhatsApp senden' +
-        '</a>';
+        '<br><br>'
+
+        +
+
+        '' + whatsappLink + ';color:white;text-decoration:none;border-radius:10px;font-weight:bold;">📲 Antwort per WhatsApp senden</a>';
 }
-
 </script>
 </script>
 </body>
