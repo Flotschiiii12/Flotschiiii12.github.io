@@ -41,12 +41,12 @@ const qs=[
 let qi=0;
 function renderQ(){
     progress.textContent='Frage '+(qi+1)+' von '+qs.length+' ❤️';
-    let d=qs[qi];
-    if(d[1]==='text'){
-        q.innerHTML='<h3>'+d[0]+'</h3><textarea class="field" id="t" rows="4"></textarea><button class="btn" onclick="nextQ()">Weiter</button>';
+    let d=qs[qs.length-1][1][0]; // Holen des ersten Elements der Gegenanalyse-Liste für die letzte Frage
+    if(qs[qi][1]==='text'){
+        q.innerHTML='<h3>'+qs[qi][0]+'</h3><textarea class="field" id="t" rows="4"></textarea><button class="btn" onclick="nextQ()">Weiter</button>';
     } else {
-        let h='<h3>'+d[0]+'</h3>';
-        d[1].forEach(v=>h+='<div class=row><label><input type=radio name=r value="'+v+'"> '+v+'</label></div>');
+        let h='<h3>'+qs[qi][0]+'</h3>';
+        qs[qi][1].forEach(v=>h+='<div class=row><label><input type=radio name=r value="'+v+'"> '+v+'</label></div>');
         h+='<button class="btn" onclick="nextQ()">Weiter</button>';
         q.innerHTML=h;
     }
@@ -80,28 +80,57 @@ function toggleOther(){
 
 // --- Funktion zur Erstellung der ICS-Datei ---
 function createIcsContent(dateStr, timeStr, activity, description) {
+    // Lokale Zeitzone ermitteln (z.B. 'Europe/Berlin' oder 'America/New_York')
+    // Dies ist eine Annahme, die auf dem deutschen Sprachgebrauch basiert.
+    // Für eine universelle Lösung müsste man die Zeitzone des Benutzers ermitteln, was clientseitig schwierig ist.
+    // Wir verwenden hier eine gängige deutsche Zeitzone.
+    const userTz = 'Europe/Berlin'; // Oder 'CET' / 'CEST' je nach Jahreszeit, aber TZID ist besser
+
+    // Datum und Zeit für ICS formatieren (YYYYMMDDTHHMMSS)
     const dateTimeStr = dateStr.replace(/-/g, '') + 'T' + timeStr.replace(/:/g, '');
-    const durationHours = 1; // Standarddauer von 1 Stunde
+
+    // Dauer von 1 Stunde annehmen und Endzeit berechnen
+    const durationHours = 1;
     const [hours, minutes] = timeStr.split(':').map(Number);
     const endHours = (hours + durationHours) % 24;
     const endMinutes = minutes;
     const endTimeStr = String(endHours).padStart(2, '0') + String(endMinutes).padStart(2, '0');
     const endDateStr = dateStr.replace(/-/g, '');
 
+    // Eindeutige ID für das Event
     const uid = 'event-' + Date.now() + Math.random().toString(36).substring(2, 15);
+
+    // Aktueller Zeitstempel für DTSTAMP (UTC)
     const dtstamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0];
 
-    // Beschreibung für ICS escapen, um Probleme mit Sonderzeichen zu vermeiden
+    // Beschreibung für ICS escapen
     let icsDescription = description.replace(/\n/g, '\\n').replace(/'/g, "\\'").replace(/,/g, '\\,');
 
+    // ICS-Inhalt erstellen
     let ics = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Grasp.info//NadineDatePlanner//DE
+CALSCALE:GREGORIAN
+BEGIN:VTIMEZONE
+TZID:${userTz}
+BEGIN:STANDARD
+DTSTART:19700101T000000
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0100
+TZNAME:CET
+END:STANDARD
+BEGIN:DAYLIGHT
+DTSTART:19700101T000000
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0200
+TZNAME:CEST
+END:DAYLIGHT
+END:VTIMEZONE
 BEGIN:VEVENT
 UID:${uid}
 DTSTAMP:${dtstamp}
-DTSTART:${dateTimeStr}
-DTEND:${endDateStr}T${endTimeStr}
+DTSTART;TZID=${userTz}:${dateTimeStr}
+DTEND;TZID=${userTz}:${endDateStr}T${endTimeStr}
 SUMMARY:${activity}
 DESCRIPTION:${icsDescription}
 END:VEVENT
@@ -188,7 +217,9 @@ function finish(){
                     transfer.innerHTML += `<br><br><a class="btn" href="${waLink}" target="_blank">📲 Antworten & Date an Florian senden</a>`;
 
                     // Kalender Button wird direkt darunter eingefügt
-                    transfer.innerHTML += `<button class="cal" onclick="downloadFile('DateMitFlorian.ics', createIcsContent('${d}', '${tm}', '${activity}', '${msg.replace(/'/g, "\\'")}'))">📅 Als Kalenderereignis hinzufügen</button>`;
+                    // Wir verwenden hier einen Link statt eines Buttons, da dies auf iOS oft besser funktioniert,
+                    // um die Datei direkt zu öffnen.
+                    transfer.innerHTML += `<br><a href="data:text/calendar;charset=utf-8,${encodeURIComponent(icsContent)}" download="DateMitFlorian.ics" class="cal">📅 Als Kalenderereignis hinzufügen</a>`;
 
                     // Hinweis für den Kalender-Button
                     transfer.innerHTML += `<p style="font-size: 0.9em; color: #555;">(Damit du es nicht vergisst! 😉)</p>`;
