@@ -83,6 +83,14 @@ Ja 😍
 <input
     type="text"
     id="customActivity"
+    class="hidden"
+    placeholder="Deine eigene Idee ❤️"
+>
+</select>
+
+<input
+    type="text"
+    id="customActivity"
     placeholder="Deine eigene Idee ❤️"
     class="hidden"
 >
@@ -153,12 +161,27 @@ function bestaetigen(){
 </script>
 <script>
 
+<script>
+
 function zeigeFormular(){
     document.getElementById("start").classList.add("hidden");
     document.getElementById("formular").classList.remove("hidden");
 }
 
-function bestaetigen(){
+function toggleCustomActivity(){
+
+    const select =
+        document.getElementById("aktivitaet");
+
+    const input =
+        document.getElementById("customActivity");
+
+    if(select.value === "custom"){
+        input.classList.remove("hidden");
+    } else {
+        input.classList.add("hidden");
+    }
+}
 
 function bestaetigen(){
 
@@ -193,12 +216,13 @@ function bestaetigen(){
         new Date(datum + "T" + uhrzeit);
 
     const ende =
-        new Date(start.getTime() + 7200000);
+        new Date(start.getTime() + 2 * 60 * 60 * 1000);
 
-    const formatICS = (d) =>
-        d.toISOString()
-         .replace(/[-:]/g,"")
-         .split(".")[0] + "Z";
+    const formatICS = (d) => {
+        return d.toISOString()
+            .replace(/[-:]/g,"")
+            .split(".")[0] + "Z";
+    };
 
     const ics =
 `BEGIN:VCALENDAR
@@ -212,8 +236,8 @@ END:VEVENT
 END:VCALENDAR`;
 
     const blob =
-        new Blob([ics],{
-            type:"text/calendar"
+        new Blob([ics], {
+            type: "text/calendar"
         });
 
     const kalenderUrl =
@@ -243,22 +267,21 @@ Ich freue mich schon ❤️`;
     document.getElementById("ausgabe").innerHTML =
 
         "📅 " + datum +
-        "<br>⏰ " + uhrzeit +
-        "<br>✨ " + aktivitaet +
+        "<br>" +
 
+        "⏰ " + uhrzeit +
+        "<br>" +
+
+        "✨ " + aktivitaet +
         "<br><br>" +
 
-        '' + kalenderUrl + ''
+        '<a href="' + kalenderUrl + '" download="DateMitFlorian.ics" style="display:inline-block;padding:12px 18px;background:#4285F4;color:white;text-decoration:none;border-radius:10px;font-weight:bold;">📅 Kalender hinzufügen</a>' +
 
-        +
+        '<br><br>' +
 
-        '<br><br>'
-
-        +
-
-        '' + whatsappLink + ';color:white;text-decoration:none;border-radius:10px;font-weight:bold;">📲 Antwort per WhatsApp senden</a>';
+        '<a href="' + whatsappLink + '" style="display:inline-block;padding:12px 18px;background:#25D366;color:white;text-decoration:none;border-radius:10px;font-weight:bold;">📲 Antwort per WhatsApp senden</a>';
 }
-</script>
+
 </script>
 </body>
 </html>
