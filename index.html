@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang='de'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Nadine V8</title><style>html,body{margin:0;overflow-x:hidden;font-family:Arial,sans-serif;background:linear-gradient(135deg,#ff5f8a,#ff7eb3,#ffc2d1)}.card{max-width:650px;margin:20px auto;background:#fff;border-radius:25px;padding:25px;box-sizing:border-box}.center{text-align:center}.left{text-align:left}.hidden{display:none}.btn{background:#ff2f6d;color:#fff;border:none;padding:12px 18px;border-radius:12px;cursor:pointer}.btnGray{background:#ddd;color:#333}.field{width:100%;padding:12px;margin-top:10px;box-sizing:border-box;border:1px solid #ddd;border-radius:12px}.row{margin:12px 0}.wa,.cal{display:block;margin:10px 0;padding:14px;border-radius:12px;text-decoration:none;color:#fff;text-align:center}.wa{background:#25D366}.cal{background:#4285f4}#txt,#cert,#transfer{white-space:pre-wrap;word-break:break-word}</style></head><body><div class='card'>
+<!DOCTYPE html><html lang='de'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Nadine V8</title><style>html,body{margin:0;overflow-x:hidden;font-family:Arial,sans-serif;background:linear-gradient(135deg,#ff5f8a,#ff7eb3,#ffc2d1)}.card{max-width:650px;margin:20px auto;background:#fff;border-radius:25px;padding:25px;box-sizing:border-box}.center{text-align:center}.left{text-align:left}.hidden{display:none}.btn{background:#ff2f6d;color:#fff;border:none;padding:12px 18px;border-radius:12px;cursor:pointer}.btnGray{background:#ddd;color:#333}.field{width:100%;padding:12px;margin-top:10px;box-sizing:border-box;border:1px solid #ddd;border-radius:12px}.row{margin:12px 0}.wa{background:#25D366}.cal{display:block;width:100%;margin-top:10px;padding:14px;border:none;border-radius:12px;background:#4285f4;color:white;font-size:16px;cursor:pointer}.cal:hover{background:#357a3c}.cal:active{background:#2d6a33}#txt,#cert,#transfer{white-space:pre-wrap;word-break:break-word}</style></head><body><div class='card'>
 <div id='intro' class='center'><h1>❤️ Nadine ❤️</h1><p>Hi Nadine 😊</p><p>Ich möchte dich etwas fragen ❤️</p><p><b>Fun Fact:</b><br>Florian hat diese Webseite wahrscheinlich öfter getestet als nötig 😇❤️</p><button class='btn' onclick="show('intro','question')">Weiter ❤️</button></div>
 <div id='question' class='center hidden'><h2>Möchtest du mit mir unser nächstes Date planen? 🥺</h2><button class='btn' onclick='showAnalysis()'>Ja 😍</button> <button id='noBtn' class='btn btnGray'>Nein 🙈</button></div>
 <div id='analysis' class='hidden left'><div id='txt'></div><br><button id='analysisBtn' class='btn hidden' onclick="show('analysis','stats')">Weiter ❤️</button></div>
@@ -9,6 +9,9 @@
 <div id='result' class='hidden center'><div id='out'></div></div></div>
 <script>
 let answers=[];
+// Globale Variable für Kalenderdaten
+let calendarData = null;
+
 function show(a,b){document.getElementById(a).classList.add('hidden');document.getElementById(b).classList.remove('hidden')}
 
 const nt=['Nein 🙈','Sicher? 🥺','Wirklich? 😢','Ganz sicher? 😭','Die Statistik empfiehlt Ja 📊','Florian wäre traurig 💔','Vielleicht doch Ja? 😇'];let ni=0;
@@ -80,35 +83,22 @@ function toggleOther(){
 
 // --- Funktion zur Erstellung der ICS-Datei ---
 function createIcsContent(dateStr, timeStr, activity, description) {
-    // Wir verwenden eine gängige deutsche Zeitzone.
-    // Für eine universelle Lösung müsste man die Zeitzone des Benutzers ermitteln, was clientseitig schwierig ist.
-    // Wir verwenden hier eine gängige deutsche Zeitzone.
-    const userTz = 'Europe/Berlin'; // Oder 'CET' / 'CEST' je nach Jahreszeit, aber TZID ist besser
+    const userTz = 'Europe/Berlin'; // Gängige deutsche Zeitzone
 
-    // Datum und Zeit für ICS formatieren (YYYYMMDDTHHMMSS)
     const dateTimeStr = dateStr.replace(/-/g, '') + 'T' + timeStr.replace(/:/g, '');
 
-    // Dauer von 1 Stunde annehmen und Endzeit berechnen
-    const durationHours = 1;
+    const durationHours = 1; // Standarddauer von 1 Stunde
     const [hours, minutes] = timeStr.split(':').map(Number);
     const endHours = (hours + durationHours) % 24;
     const endMinutes = minutes;
     const endTimeStr = String(endHours).padStart(2, '0') + String(endMinutes).padStart(2, '0');
     const endDateStr = dateStr.replace(/-/g, '');
 
-    // Eindeutige ID für das Event
     const uid = 'event-' + Date.now() + Math.random().toString(36).substring(2, 15);
-
-    // Aktueller Zeitstempel für DTSTAMP (UTC)
     const dtstamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0];
 
-    // Beschreibung für ICS escapen
-    // Wichtig: Kommas, Backslashes und Zeilenumbrüche müssen korrekt escaped werden.
     let icsDescription = description.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/'/g, "\\'");
 
-    // ICS-Inhalt erstellen - Vereinfachte VTIMEZONE
-    // Wir lassen die detaillierte VTIMEZONE-Definition weg und verlassen uns nur auf TZID.
-    // Dies ist oft kompatibler.
     let ics = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Grasp.info//NadineDatePlanner//DE
@@ -135,22 +125,55 @@ function downloadFile(filename, content, mimeType = 'text/plain') {
         const a = document.createElement('a');
         a.href = url;
         a.download = filename;
-        // a.style.display = 'none'; // Verstecken, falls es kurz sichtbar ist
         document.body.appendChild(a);
         console.log("Attempting to click download link..."); // Debugging
         a.click();
         console.log("Download link clicked."); // Debugging
-        // Cleanup after a short delay to allow the click to register
         setTimeout(() => {
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             console.log("Cleanup done."); // Debugging
-        }, 100); // Kurze Verzögerung
+        }, 100);
     } catch (e) {
         console.error("Error in downloadFile:", e); // Debugging
         alert("Fehler beim Erstellen des Downloads. Bitte versuchen Sie es erneut.");
     }
 }
+
+// --- NEUE FUNKTION EINFÜGEN ---
+function saveCalendar(){
+    if(!calendarData) return; // Falls keine Daten vorhanden sind, nichts tun
+
+    const icsContent = createIcsContent(
+        calendarData.date,
+        calendarData.time,
+        calendarData.activity,
+        calendarData.description
+    );
+
+    const blob = new Blob(
+        [icsContent],
+        {
+            type: 'text/calendar;charset=utf-8' // Korrekter MIME-Typ für ICS
+        }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'DateMitFlorian.ics';
+
+    document.body.appendChild(a);
+    a.click();
+
+    // Cleanup nach kurzer Verzögerung
+    setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }, 100);
+}
+
 
 function finish(){
     let activity=document.getElementById('act').value;
@@ -173,15 +196,22 @@ function finish(){
     // Erstellung der Nachricht für WhatsApp und die Beschreibung für ICS
     let msg=`Hey Florian ❤️\n\nIch habe JA gesagt! 🥰\n\n📅 Unser Date:\nDatum: ${d}\n\n⏰ Uhrzeit:\n${tm}\n\n✨ Aktivität:\n${activity}\n\nUnd hier noch meine Antworten 😉❤️\n\n🏆 Lieblingsdate:\n${answers[0]}\n\n⏰ Zeit bei unseren Treffen:\n${answers[1]}\n\n💭 Florian in einem Wort:\n${answers[2]}\n\n📋 Unsere bisherigen Treffen:\n${answers[3]}\n\n💌 Was ich an Florian am meisten schätze:\n${answers[4]}\n\n💭 Worauf ich mich am meisten freue:\n${answers[5]}\n\n🦋 Gegenanalyse:\n${answers[6]}`;
 
-    // ICS-Inhalt generieren
-    const icsContent = createIcsContent(d, tm, activity, msg);
+    // --- FINISH() ERWEITERN ---
+    // Globale Variable mit den Daten für die Kalenderfunktion befüllen
+    calendarData = {
+        date: d,
+        time: tm,
+        activity: activity,
+        description: msg
+    };
+
+    // ICS-Inhalt wird nicht mehr direkt hier generiert, sondern von saveCalendar()
+    // const icsContent = createIcsContent(d, tm, activity, msg); // Diese Zeile wird nicht mehr benötigt
 
     show('plan','result');
 
     let resultHtml = `<h2>✅ DATE BESTÄTIGT ❤️</h2>`;
 
-    // Die "Kleinen Nachricht" und das Zertifikat werden nun direkt hier eingefügt,
-    // bevor die simulierte Datenübertragung beginnt.
     resultHtml += `<div class="left">
         <h3>💌 Kleine Nachricht</h3>
         <br>
@@ -204,7 +234,6 @@ function finish(){
         if(i>=ct.length){
             clearInterval(c);
 
-            // Der Text für die simulierte Datenübertragung
             let transferText = `📡 Datenübertragung ausstehend...\nVerbinde mit Florian...\n✅ Überprüfe Schmetterlings-Analyse...\n✅ Verpacke Antworten...\n✅ Übertragung bereit ❤️\n\n⚠️ Letzter Schritt erforderlich:\nDie Ergebnisse wurden vorbereitet,\naber noch nicht an Florian gesendet.\nOhne den nächsten Schritt\nbekommt er deine Antworten leider nicht 😇\n👇 Bitte jetzt übertragen 👇`;
             let j = 0;
             let transferWriter = setInterval(() => {
@@ -216,17 +245,47 @@ function finish(){
                     const waLink = `https://api.whatsapp.com/send?phone=4915758309186&text=${encodeURIComponent(msg)}`;
                     transfer.innerHTML += `<br><br><a class="btn" href="${waLink}" target="_blank">📲 Antworten & Date an Florian senden</a>`;
 
-                    // Kalender Button wird direkt darunter eingefügt
-                    // Wir verwenden hier die downloadFile Funktion, um die ICS-Datei explizit herunterzuladen.
-                    // Der onclick-Handler ruft createIcsContent auf und übergibt das Ergebnis an downloadFile.
-                    // Wir müssen die Anführungszeichen in der Nachricht escapen, damit sie korrekt im String landen.
-                    transfer.innerHTML += `<button class="cal" onclick="downloadFile('DateMitFlorian.ics', createIcsContent('${d}', '${tm}', '${activity}', '${msg.replace(/'/g, "\\'")}'))">📅 Als Kalenderereignis hinzufügen</button>`;
+                    // --- NEUEN KALENDERBUTTON EINFÜGEN ---
+                    // Der alte Kalenderbutton wurde entfernt.
+                    // Dieser neue Button ruft die saveCalendar() Funktion auf.
+                    transfer.innerHTML += `
+<br><br>
 
-                    // Hinweis für den Kalender-Button
-                    transfer.innerHTML += `<p style="font-size: 0.9em; color: #555;">(Damit du es nicht vergisst! 😉)</p>`;
+<button class="cal" onclick="saveCalendar()">
+📆 Unser nächstes Date im Kalender speichern ❤️
+</button>
+
+<p style="font-size:14px;color:#666;margin-top:8px;">
+Damit du unser Date nicht vergisst 🥰
+</p>
+`;
                 }
             }, 15);
         }
     }, 15);
 }
+
+// --- CSS AKTUALISIEREN ---
+// Die .cal Klasse wurde oben im <style> Tag aktualisiert.
+// Hier ist der relevante Teil des Stylesheets:
+/*
+.cal{
+    display:block;
+    width:100%;
+    margin-top:10px;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:#4285f4;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+.cal:hover{
+    background:#357a3c; // Optional: Hover-Effekt
+}
+.cal:active{
+    background:#2d6a33; // Optional: Active-Effekt
+}
+*/
 </script></body></html>
