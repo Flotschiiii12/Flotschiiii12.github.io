@@ -37,9 +37,12 @@ let answers=[];
 let calendarData = null;
 
 // --- Funktion für Schreibmaschinen-Effekt ---
-function animateText(elementId, text, delay = 15) {
+function animateText(elementId, text, delay = 15, callback) {
     const element = document.getElementById(elementId);
-    if (!element) return;
+    if (!element) {
+        if (callback) callback(); // Callback auch aufrufen, wenn Element nicht gefunden wird
+        return;
+    }
     element.textContent = ''; // Sicherstellen, dass das Element leer ist
     let i = 0;
     const interval = setInterval(() => {
@@ -47,6 +50,7 @@ function animateText(elementId, text, delay = 15) {
         i++;
         if (i >= text.length) {
             clearInterval(interval);
+            if (callback) callback(); // Callback nach Abschluss der Animation aufrufen
         }
     }, delay);
 }
@@ -78,12 +82,16 @@ function show(a,b){
 function showAnalysis(){
     show('question','analysis');
     const analysisText = 'Systemanalyse läuft...\n\n✅ Sehr sympathisch 😊\n\n✅ Hat ein wunderschönes Lächeln ❤️\n\n✅ Hat bereits Wanderungen und Spaziergänge erfolgreich überstanden 🥾🌳\n\n✅ Hat bei Eis, Billard und Kino einen ausgezeichneten Eindruck hinterlassen 🍦🎱🍿\n\nErgebnis:\n\nNächstes Date dringend empfohlen ❤️';
-    animateText('txt', analysisText); // Schreibmaschinen-Effekt für Analyse-Text
     
-    // Button wird sichtbar, wenn Text fertig ist
+    // Button wird erst sichtbar, wenn Text fertig ist
     const analysisBtn = document.getElementById('analysisBtn');
-    analysisBtn.classList.remove('hidden');
-    analysisBtn.classList.add('visible');
+    analysisBtn.classList.add('hidden'); // Sicherstellen, dass er versteckt ist
+
+    animateText('txt', analysisText, 15, () => {
+        // Callback: Wird aufgerufen, wenn die Animation für 'txt' fertig ist
+        analysisBtn.classList.remove('hidden');
+        analysisBtn.classList.add('visible'); // Macht den Button sichtbar
+    });
 }
 
 function startQuestions(){show('questionsIntro','questions');renderQ()}
@@ -99,6 +107,28 @@ const qs=[
 ];
 let qi=0;
 function renderQ(){
+    const questionElement = document.getElementById('q');
+    // --- Klassen zurücksetzen, um Animationen korrekt auszuführen ---
+    questionElement.classList.remove('fade-in', 'fade-out', 'visible');
+    questionElement.innerHTML = ''; // Vorherigen Inhalt leeren
+
+    let d=qs[qi];
+    let questionHtml = '';
+    if(d[1]==='text'){
+        questionHtml='<h3>'+d[0]+'</h3><textarea class="field" id="t" rows="4"></textarea><button id="nextQBtn" class="btn hidden" onclick="nextQ()">Weiter</button>'; // Button initial versteckt
+    } else {
+        questionHtml='<h3>'+d[0]+'</h3>';
+        d[1].forEach((v, index) => {
+            let optionClass = '';
+            if (qs[qi][0].includes('Welches Date war bisher dein Favorit?') && answers.length > 0 && answers[0] === v) {
+                optionClass = 'highlight-activity';
+            }
+            questionHtml+='<div class="row"><label><input type="radio" name="r" value="'+v+'" class="'+optionClass+'"> '+v+'</label></div>';
+        });
+        questionHtml+='<button id="nextQBtn" class="btn hidden" onclick="nextQ()">Weiter</button>'; // Button initial versteckt
+    }
+    questionElement.innerHTML=questionHtml;
+
     // --- Visuelle Fortschrittsanzeige für Fragen ---
     const progressBarContainer = document.getElementById('progress');
     const progressWidth = ((qi + 1) / qs.length) * 100;
@@ -109,34 +139,16 @@ function renderQ(){
         Frage ${(qi + 1)} von ${qs.length} ❤️
     `;
 
-    const questionElement = document.getElementById('q');
-    // --- Klassen zurücksetzen, um Animationen korrekt auszuführen ---
-    questionElement.classList.remove('fade-in', 'fade-out', 'visible');
-    questionElement.innerHTML = ''; // Vorherigen Inhalt leeren
-
-    let d=qs[qi];
-    if(d[1]==='text'){
-        questionElement.innerHTML='<h3>'+d[0]+'</h3><textarea class="field" id="t" rows="4"></textarea><button class="btn" onclick="nextQ()">Weiter</button>';
-    } else {
-        let h='<h3>'+d[0]+'</h3>';
-        d[1].forEach((v, index) => {
-            // --- Dynamische Aktivitätsvorschläge (einfach) ---
-            let optionClass = '';
-            // Wenn es die Lieblingsaktivitäten-Frage ist und die Antwort passt, hebe die Option hervor
-            if (qs[qi][0].includes('Welches Date war bisher dein Favorit?') && answers.length > 0 && answers[0] === v) {
-                optionClass = 'highlight-activity'; // CSS-Klasse für Hervorhebung
-            }
-            h+='<div class="row"><label><input type="radio" name="r" value="'+v+'" class="'+optionClass+'"> '+v+'</label></div>';
-        });
-        h+='<button class="btn" onclick="nextQ()">Weiter</button>';
-        questionElement.innerHTML=h;
-    }
-    // Frage-Elemente sichtbar machen mit Fade-In
-    questionElement.classList.add('fade-in');
+    // Frage-Elemente sichtbar machen mit Fade-In, nachdem der Inhalt geladen wurde
+    // Kurze Verzögerung, um sicherzustellen, dass der Inhalt gerendert ist
     setTimeout(() => {
+        questionElement.classList.add('fade-in');
         questionElement.classList.add('visible');
+        // Button erst sichtbar machen, wenn die Frage vollständig angezeigt wird
+        document.getElementById('nextQBtn').classList.remove('hidden');
     }, 50);
 }
+
 function nextQ(){
     let d=qs[qi];
     if(d[1]==='text'){
@@ -150,6 +162,7 @@ function nextQ(){
         answers.push(r.value);
     }
     qi++;
+
     // Frage-Elemente für den Fade-Out vorbereiten
     const questionElement = document.getElementById('q');
     questionElement.classList.remove('visible');
@@ -358,30 +371,33 @@ function finish(){
     // --- Zertifikat mit Schreibmaschinen-Effekt ---
     const certTextElement = document.getElementById('cert');
     certTextElement.textContent = ''; // Sicherstellen, dass es leer ist, bevor die Animation beginnt
-    let certAnimationInterval = setInterval(()=>{
-        certTextElement.textContent = ct.slice(0, certTextElement.textContent.length + 1);
-        if (certTextElement.textContent.length >= ct.length) {
-            clearInterval(certAnimationInterval);
-            // Sobald das Zertifikat fertig geschrieben ist, starten wir die Datenübertragung
-            startTransferSimulation();
-        }
-    }, 15); // Geschwindigkeit der Schreibmaschine
+
+    // Funktion, die den Schreibmaschineneffekt für das Zertifikat steuert
+    function writeCertificate() {
+        animateText('cert', ct, 15, () => {
+            // Callback: Wird aufgerufen, wenn das Zertifikat fertig geschrieben ist
+            startTransferSimulation(); // Starte die Simulation der Datenübertragung
+        });
+    }
 
     // --- Funktion zur Simulation der Datenübertragung und Anzeige der Buttons ---
     function startTransferSimulation() {
         let transferText = `📡 Datenübertragung ausstehend...\nVerbinde mit Florian...\n✅ Überprüfe Schmetterlings-Analyse...\n✅ Verpacke Antworten...\n✅ Übertragung bereit ❤️\n\n⚠️ Letzter Schritt erforderlich:\nDie Ergebnisse wurden vorbereitet,\naber noch nicht an Florian gesendet.\nOhne den nächsten Schritt\nbekommt er deine Antworten leider nicht 😇\n👇 Bitte jetzt übertragen 👇`;
         let j = 0;
-        let transferWriter = setInterval(() => {
-            transfer.textContent = transferText.slice(0, ++j);
+        const transferElement = document.getElementById('transfer');
+        transferElement.textContent = ''; // Sicherstellen, dass das Element leer ist
+
+        const transferWriter = setInterval(() => {
+            transferElement.textContent = transferText.slice(0, ++j);
             if (j >= transferText.length) {
                 clearInterval(transferWriter);
 
                 // WhatsApp Button (jetzt grün und zentriert dank .wa Klasse)
                 const waLink = `https://api.whatsapp.com/send?phone=4915758309186&text=${encodeURIComponent(msg)}`;
-                transfer.innerHTML += `<br><br><a class="wa" href="${waLink}" target="_blank">📲 Antworten & Date an Florian senden</a>`;
+                transferElement.innerHTML += `<br><br><a class="wa" href="${waLink}" target="_blank">📲 Antworten & Date an Florian senden</a>`;
 
                 // Kalender Button
-                transfer.innerHTML += `
+                transferElement.innerHTML += `
 <br><br>
 
 <button
@@ -395,7 +411,10 @@ Damit du unser Date nicht vergisst 🥰
 </p>
 `;
             }
-        }, 15);
+        }, 15); // Geschwindigkeit der Schreibmaschine
     }
+
+    // Starte die Zertifikatsschreibung, die dann die Übertragungssimulation startet
+    writeCertificate();
 }
 </script></body></html>
