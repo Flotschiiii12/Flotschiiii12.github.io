@@ -69,12 +69,24 @@ Ja 😍
 
 <input type="time" id="uhrzeit">
 
-<select id="aktivitaet">
-<option>Café ☕</option>
-<option>Kino 🍿</option>
-<option>Essen 🍝</option>
-<option>Spaziergang 🌳</option>
+<select id="aktivitaet" onchange="toggleCustomActivity()">
+    <option>Café ☕</option>
+    <option>Kino 🍿</option>
+    <option>Essen gehen 🍝</option>
+    <option>Spaziergang 🌳</option>
+    <option>Dart bei dir 🎯</option>
+    <option>Baden 🏊</option>
+    <option>Gemeinsam Feiern 🎉</option>
+    <option value="custom">Etwas anderes ... ✏️</option>
 </select>
+
+<input
+    type="text"
+    id="customActivity"
+    placeholder="Deine Idee ❤️"
+    style="display:none;"
+>
+
 
 <br><br>
 
