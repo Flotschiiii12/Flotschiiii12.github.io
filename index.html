@@ -1,33 +1,178 @@
 <!DOCTYPE html>
-<html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Für Nadine ❤️</title>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nadine ❤️</title>
+
 <style>
-body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#ff5f8a,#ff8fb1);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
-.card{max-width:600px;width:100%;background:#fff;border-radius:24px;padding:30px;box-shadow:0 10px 40px rgba(0,0,0,.2);text-align:center}
-.hidden{display:none}h1{color:#e91e63}button,a.btn{background:#e91e63;color:#fff;border:none;border-radius:12px;padding:14px 22px;font-size:16px;cursor:pointer;text-decoration:none;display:inline-block}
-input,select{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:10px;box-sizing:border-box}
-.small{color:#666}.heart{position:fixed;pointer-events:none;font-size:20px;animation:fall 6s linear forwards}@keyframes fall{from{transform:translateY(-50px)}to{transform:translateY(110vh)}}
-</style></head><body>
+body{
+    font-family: Arial, sans-serif;
+    background:#ff6b8a;
+    margin:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.card{
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    width:90%;
+    max-width:500px;
+    text-align:center;
+}
+
+button{
+    padding:12px 20px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.yes{
+    background:#ff4d6d;
+    color:white;
+}
+
+.hidden{
+    display:none;
+}
+
+input,select{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    box-sizing:border-box;
+}
+</style>
+</head>
+
+<body>
+
 <div class="card">
-<div id="s1"><h1>❤️ Nadine ❤️</h1><p>Ich möchte dich etwas fragen ...</p><h2>Möchtest du mit mir auf ein Date gehen? 🥺</h2><button onclick="showForm()">Ja 😍</button><p class="small">(Ein Nein-Button existiert heute leider nicht 😇)</p></div>
-<div id="s2" class="hidden"><h2>Das macht mich glücklich ❤️</h2><input id="date" type="date"><input id="time" type="time"><select id="activity"><option>☕ Café</option><option>🍿 Kino</option><option>🍝 Essen gehen</option><option>🌳 Spaziergang</option><option>🍦 Eis essen</option><option>🎳 Bowling</option><option>🎁 Überraschung</option></select><button onclick="confirmDate()">Date bestätigen ❤️</button></div>
-<div id="s3" class="hidden"><h2>Perfekt 🥰</h2><div id="out"></div><br><div id="cal"></div></div>
+
+<div id="start">
+<h1>❤️ Nadine ❤️</h1>
+<p>Möchtest du mit mir auf ein Date gehen?</p>
+
+<button class="yes" onclick="zeigeFormular()">
+Ja 😍
+</button>
 </div>
+
+<div id="formular" class="hidden">
+
+<input type="date" id="datum">
+
+<input type="time" id="uhrzeit">
+
+<select id="aktivitaet">
+<option>Café ☕</option>
+<option>Kino 🍿</option>
+<option>Essen 🍝</option>
+<option>Spaziergang 🌳</option>
+</select>
+
+<br><br>
+
+<button class="yes" onclick="bestaetigen()">
+Bestätigen ❤️
+</button>
+
+</div>
+
+<div id="ergebnis" class="hidden">
+<h2>Perfekt ❤️</h2>
+<p id="ausgabe"></p>
+</div>
+
+</div>
+
 <script>
-const MY='4915758309186';
-function hearts(n){for(let i=0;i<n;i++){let h=document.createElement('div');h.className='heart';h.innerHTML='❤️';h.style.left=Math.random()*100+'%';h.style.animationDuration=(3+Math.random()*3)+'s';document.body.appendChild(h);setTimeout(()=>h.remove(),7000);}}
-function showForm(){hearts(30);document.getElementById('s1').classList.add('hidden');document.getElementById('s2').classList.remove('hidden');}
-function confirmDate(){let d=document.getElementById('date').value;let t=document.getElementById('time').value;let a=document.getElementById('activity').value;if(!d||!t){alert('Bitte Datum und Uhrzeit auswählen ❤️');return;}let st=new Date(d+'T'+t);let en=new Date(st.getTime()+7200000);let fmt=x=>x.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';let ics='BEGIN:VCALENDAR
-VERSION:2.0
-BEGIN:VEVENT
-SUMMARY:Date mit Florian ❤️
-DESCRIPTION:'+a+'
-DTSTART:'+fmt(st)+'
-DTEND:'+fmt(en)+'
-END:VEVENT
-END:VCALENDAR';let blob=new Blob([ics],{type:'text/calendar'});let url=URL.createObjectURL(blob);document.getElementById('s2').classList.add('hidden');document.getElementById('s3').classList.remove('hidden');document.getElementById('out').innerHTML='📅 '+d+'<br>⏰ '+t+'<br>✨ '+a;document.getElementById('cal').innerHTML='<a class="btn" download="DateMitFlorian.ics" href="'+url+'">📅 Zum Kalender hinzufügen</a>';hearts(60);setTimeout(function(){window.open('https://wa.me/'+MY+'?text='+encodeURIComponent('Hey Florian ❤️
+
+function zeigeFormular(){
+    document.getElementById("start").classList.add("hidden");
+    document.getElementById("formular").classList.remove("hidden");
+}
+
+function bestaetigen(){
+
+    const datum =
+        document.getElementById("datum").value;
+
+    const uhrzeit =
+        document.getElementById("uhrzeit").value;
+
+    const aktivitaet =
+        document.getElementById("aktivitaet").value;
+
+    if(!datum || !uhrzeit){
+        alert("Bitte Datum und Uhrzeit auswählen.");
+        return;
+    }
+
+    document.getElementById("formular")
+        .classList.add("hidden");
+
+    document.getElementById("ergebnis")
+        .classList.remove("hidden");
+
+    document.getElementById("ausgabe").innerHTML =
+        "📅 " + datum + "<br>" +
+        "⏰ " + uhrzeit + "<br>" +
+        "✨ " + aktivitaet;
+}
+</script>
+<script>
+function bestaetigen(){
+
+    const datum =
+        document.getElementById("datum").value;
+
+    const uhrzeit =
+        document.getElementById("uhrzeit").value;
+
+    const aktivitaet =
+        document.getElementById("aktivitaet").value;
+
+    if(!datum || !uhrzeit){
+        alert("Bitte Datum und Uhrzeit auswählen.");
+        return;
+    }
+
+    document.getElementById("formular")
+        .classList.add("hidden");
+
+    document.getElementById("ergebnis")
+        .classList.remove("hidden");
+
+    document.getElementById("ausgabe").innerHTML =
+        "📅 " + datum + "<br>" +
+        "⏰ " + uhrzeit + "<br>" +
+        "✨ " + aktivitaet;
+
+    const nachricht =
+`Hey Florian ❤️
 
 Ich habe JA gesagt! 🥰
-📅 '+d+'
-⏰ '+t+'
-✨ '+a),'_blank');},800);}
-</script></body></html>
+
+📅 ${datum}
+⏰ ${uhrzeit}
+✨ ${aktivitaet}
+
+Ich freue mich schon ❤️`;
+
+    setTimeout(() => {
+        window.open(
+            "https://wa.me/4915758309186?text=" +
+            encodeURIComponent(nachricht),
+            "_blank"
+        );
+    }, 1000);
+}
+</script>
+</body>
+</html>
