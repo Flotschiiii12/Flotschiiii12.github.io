@@ -17,7 +17,7 @@ html,body{margin:0;overflow-x:hidden;font-family:-apple-system, BlinkMacSystemFo
     <option>🥾 Wandern</option>
     <option>🎯 Dart bei dir</option>
     <option>🏊 Baden</option>
-    <option>🎉 Gemeinsam Feiern</option> <!-- Wieder hinzugefügt -->
+    <option>🎉 Gemeinsam Feiern</option>
     <option>✏️ Etwas anderes ...</option>
 </select>
 <select class='field' id='duration'> <!-- Dauer-Auswahl -->
@@ -79,7 +79,8 @@ function show(a,b){
 
 function showAnalysis(){
     show('question','analysis');
-    let t='Systemanalyse läuft...\n\n✅ Sehr sympathisch 😊\n\n✅ Hat ein wunderschönes Lächeln ❤️\n\n✅ Hat bereits Wanderungen und Spaziergänge erfolgreich überstanden 🥾🌳\n\n✅ Hat bei Eis, Billard und Kino einen ausgezeichneten Eindruck hinterlassen 🍦🎱🍿\n\nErgebnis:\n\nNächstes Date dringend empfohlen ❤️';
+    // --- NEUER TEXT FÜR DIE ANALYSE ---
+    let t='Nadine-Kompatibilität wird berechnet... ❤️';
     let i=0;
     const txtElement = document.getElementById('txt');
     const analysisBtn = document.getElementById('analysisBtn');
@@ -89,8 +90,9 @@ function showAnalysis(){
         txtElement.textContent=t.slice(0,++i);
         if(i>=t.length){
             clearInterval(interval);
+            // Hier wird der Button sichtbar, NACHDEM der Text fertig geschrieben ist
             analysisBtn.classList.remove('hidden');
-            analysisBtn.classList.add('visible'); // Button sichtbar machen
+            analysisBtn.classList.add('visible');
         }
     },15);
 }
@@ -108,17 +110,11 @@ const qs=[
 ];
 let qi=0;
 function renderQ(){
-    // --- Visuelle Fortschrittsanzeige für Fragen ---
-    const progressBarContainer = document.getElementById('progress');
-    const progressWidth = ((qi + 1) / qs.length) * 100;
-    progressBarContainer.innerHTML = `
-        <div class="progress-bar-container">
-            <div class="progress-bar" style="width: ${progressWidth}%;"></div>
-        </div>
-        Frage ${(qi + 1)} von ${qs.length} ❤️
-    `;
-
     const questionElement = document.getElementById('q');
+
+    // --- Klassen zurücksetzen, um Animationen korrekt auszuführen ---
+    // Dies ist die von Ihnen empfohlene Korrektur, um sicherzustellen, dass die Animationen bei jedem Wechsel korrekt funktionieren.
+    questionElement.classList.remove('fade-in', 'fade-out', 'visible');
     questionElement.innerHTML = ''; // Vorherigen Inhalt leeren
 
     let d=qs[qi];
@@ -138,9 +134,21 @@ function renderQ(){
         h+='<button class="btn" onclick="nextQ()">Weiter</button>';
         questionElement.innerHTML=h;
     }
+
+    // --- Visuelle Fortschrittsanzeige für Fragen ---
+    const progressBarContainer = document.getElementById('progress');
+    const progressWidth = ((qi + 1) / qs.length) * 100;
+    progressBarContainer.innerHTML = `
+        <div class="progress-bar-container">
+            <div class="progress-bar" style="width: ${progressWidth}%;"></div>
+        </div>
+        Frage ${(qi + 1)} von ${qs.length} ❤️
+    `;
+
     // Frage-Elemente sichtbar machen mit Fade-In
-    questionElement.classList.add('fade-in');
+    // Kurze Verzögerung, um sicherzustellen, dass der Inhalt gerendert ist
     setTimeout(() => {
+        questionElement.classList.add('fade-in');
         questionElement.classList.add('visible');
     }, 50);
 }
