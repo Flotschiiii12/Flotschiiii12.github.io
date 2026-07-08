@@ -23,6 +23,7 @@ body{
     width:90%;
     max-width:500px;
     text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
 }
 
 button{
@@ -30,6 +31,7 @@ button{
     border:none;
     border-radius:10px;
     cursor:pointer;
+    font-size:16px;
 }
 
 .yes{
@@ -47,6 +49,23 @@ input,select{
     margin-top:10px;
     box-sizing:border-box;
 }
+
+.button-link{
+    display:inline-block;
+    padding:12px 18px;
+    border-radius:10px;
+    text-decoration:none;
+    color:white;
+    font-weight:bold;
+}
+
+.calendar{
+    background:#4285F4;
+}
+
+.whatsapp{
+    background:#25D366;
+}
 </style>
 </head>
 
@@ -55,53 +74,52 @@ input,select{
 <div class="card">
 
 <div id="start">
-<h1>❤️ Nadine ❤️</h1>
-<p>Möchtest du mit mir auf ein Date gehen?</p>
+    <h1>❤️ Nadine ❤️</h1>
+    <p>Möchtest du mit mir auf ein Date gehen? 🥺</p>
 
-<button class="yes" onclick="zeigeFormular()">
-Ja 😍
-</button>
+    <button class="yes" onclick="zeigeFormular()">
+        Ja 😍
+    </button>
 </div>
 
 <div id="formular" class="hidden">
 
-<input type="date" id="datum">
+    <input type="date" id="datum">
 
-<input type="time" id="uhrzeit">
+    <input type="time" id="uhrzeit">
 
-<select id="aktivitaet" onchange="toggleCustomActivity()">
-    <option value="Café ☕">Café ☕</option>
-    <option value="Kino 🍿">Kino 🍿</option>
-    <option value="Essen gehen 🍝">Essen gehen 🍝</option>
-    <option value="Spaziergang 🌳">Spaziergang 🌳</option>
-    <option value="Dart bei dir 🎯">Dart bei dir 🎯</option>
-    <option value="Baden 🏊">Baden 🏊</option>
-    <option value="Gemeinsam Feiern 🎉">Gemeinsam Feiern 🎉</option>
-    <option value="custom">✏️ Etwas anderes ...</option>
-</select>
+    <select id="aktivitaet" onchange="toggleCustomActivity()">
+        <option value="Café ☕">Café ☕</option>
+        <option value="Kino 🍿">Kino 🍿</option>
+        <option value="Essen gehen 🍝">Essen gehen 🍝</option>
+        <option value="Spaziergang 🌳">Spaziergang 🌳</option>
+        <option value="Dart bei dir 🎯">Dart bei dir 🎯</option>
+        <option value="Baden 🏊">Baden 🏊</option>
+        <option value="Gemeinsam Feiern 🎉">Gemeinsam Feiern 🎉</option>
+        <option value="custom">✏️ Etwas anderes ...</option>
+    </select>
 
-<input
-    type="text"
-    id="customActivity"
-    placeholder="Deine eigene Idee ❤️"
-    class="hidden"
->
+    <input
+        type="text"
+        id="customActivity"
+        class="hidden"
+        placeholder="Deine eigene Idee ❤️"
+    >
 
-<br><br>
+    <br><br>
 
-<button class="yes" onclick="bestaetigen()">
-Bestätigen ❤️
-</button>
+    <button class="yes" onclick="bestaetigen()">
+        Bestätigen ❤️
+    </button>
 
 </div>
 
 <div id="ergebnis" class="hidden">
-<h2>Perfekt ❤️</h2>
-<p id="ausgabe"></p>
+    <h2>Perfekt ❤️</h2>
+    <div id="ausgabe"></div>
 </div>
 
 </div>
-
 
 <script>
 
@@ -197,8 +215,7 @@ Ich habe JA gesagt! 🥰
 Ich freue mich schon ❤️`;
 
     const whatsappLink =
-        "https://api.whatsapp.com/send?phone=4915758309186&text="
-`` +
+        "https://api.whatsapp.com/send?phone=4915758309186&text=" +
         encodeURIComponent(nachricht);
 
     document.getElementById("formular")
@@ -209,15 +226,25 @@ Ich freue mich schon ❤️`;
 
     document.getElementById("ausgabe").innerHTML =
 
-    "📅 " + datum +
-    "<br>" +
-    "⏰ " + uhrzeit +
-    "<br>" +
-    "✨ " + aktivitaet +
-    "<br><br>" +
+        "📅 " + datum +
+        "<br>" +
+        "⏰ " + uhrzeit +
+        "<br>" +
+        "✨ " + aktivitaet +
+        "<br><br>" +
 
-    '<a href="' + kalenderUrl + '" download="DateMitFlorian.ics" style="display:inline-block;padding:12px 18px;background:#4285F4;color:white;text-decoration:none;border-radius:rder-radius:10px;font-weight:bold;">📲 Antwort per WhatsApp senden</a>';
+        '<a class="button-link calendar" href="' +
+        kalenderUrl +
+        '" download="DateMitFlorian.ics">📅 Kalender hinzufügen</a>' +
+
+        '<br><br>' +
+
+        '<a class="button-link whatsapp" href="' +
+        whatsappLink +
+        '">📲 Antwort per WhatsApp senden</a>';
+}
 
 </script>
+
 </body>
 </html>
