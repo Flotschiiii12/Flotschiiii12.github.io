@@ -43,11 +43,34 @@ html,body{margin:0;overflow-x:hidden;font-family:-apple-system, BlinkMacSystemFo
     border-radius: 12px;
     font-size: 16px;
 }
+/* Stil für die einzelnen Statistik-Elemente */
+.stat-item {
+    margin-bottom: 10px; /* Abstand zwischen den Zeilen */
+    opacity: 0; /* Standardmäßig unsichtbar für Fade-In */
+    transform: translateY(20px); /* Startposition für Fade-In */
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out; /* Übergangseffekte */
+}
+.stat-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
 </style></head><body><div class='card'>
 <div id='intro' class='center'><h1>❤️ Nadine ❤️</h1><p id='intro-text1'>Hi Nadine 😊</p><p id='intro-text2'>Ich möchte dich etwas fragen ❤️</p><button class='btn' onclick="show('intro','question')">Weiter ❤️</button></div>
 <div id='question' class='center hidden'><h2>Möchtest du mit mir unser nächstes Date planen? 🥺</h2><button class='btn' onclick='showAnalysis()'>Ja 😍</button> <button id='noBtn' class='btn btnGray'>Nein 🙈</button></div>
 <div id='analysis' class='hidden left'><div id='txt'></div><br><button id='analysisBtn' class='btn hidden' onclick="show('analysis','stats')">Weiter ❤️</button></div>
-<div id='stats' class='hidden center'><h2>❤️ Statistik</h2><p>🍦 Eis ✅<br>🎱 Billard ✅<br>🥾 Wandern ✅<br>🌳 Spaziergang ✅<br>🍿 Kino ✅</p><p>Fehlgeschlagene Treffen: 0<br><br><b>Erfolgsquote: 100 %</b><br>Weitere Treffen dringend empfohlen ❤️</p><button class='btn' onclick="show('stats','questionsIntro')">Weiter ❤️</button></div>
+<div id='stats' class='hidden center'><h2>❤️ Statistik</h2>
+<div id='stats-content'>
+    <p id='stat-item-1' class='stat-item'>🍦 Eis ✅</p>
+    <p id='stat-item-2' class='stat-item'>🎱 Billard ✅</p>
+    <p id='stat-item-3' class='stat-item'>🥾 Wandern ✅</p>
+    <p id='stat-item-4' class='stat-item'>🌳 Spaziergang ✅</p>
+    <p id='stat-item-5' class='stat-item'>🍿 Kino ✅</p>
+    <p id='stat-item-6' class='stat-item'>Fehlgeschlagene Treffen: 0</p>
+    <br>
+    <p id='stat-item-7' class='stat-item'><b>Erfolgsquote: 100 %</b></p>
+    <p id='stat-item-8' class='stat-item'>Weitere Treffen dringend empfohlen ❤️</p>
+</div>
+<button id='statsBtn' class='btn' onclick="show('stats','questionsIntro')">Weiter ❤️</button></div>
 <div id='questionsIntro' class='center hidden'><h2>Aber bevor wir weitermachen...</h2><p>hier ein paar Fragen 😊</p><button class='btn' onclick='startQuestions()'>Weiter ❤️</button></div>
 <div id='questions' class='hidden left'><div id='progress'></div><div id='q'></div></div>
 <div id='plan' class='hidden center'><h2>Date planen ❤️</h2>
@@ -132,6 +155,10 @@ function show(a,b){
             if (b === 'intro') { // Wenn das Intro-Element gerade angezeigt wird
                 animateIntroTexts();
             }
+            // --- NEU: Animationen für Statistik-Texte starten, wenn #stats sichtbar wird ---
+            if (b === 'stats') {
+                animateStats();
+            }
         }, 50);
     }, { once: true });
 }
@@ -184,6 +211,29 @@ Nächstes Date dringend empfohlen ❤️`;
         }
     },15);
 }
+
+// --- Funktion zum Animieren der Statistik-Elemente ---
+function animateStats() {
+    const statItems = [
+        'stat-item-1', 'stat-item-2', 'stat-item-3', 'stat-item-4', 'stat-item-5',
+        'stat-item-6', 'stat-item-7', 'stat-item-8'
+    ];
+    const delayBetweenItems = 100; // Millisekunden Verzögerung zwischen den einzelnen Zeilen
+
+    statItems.forEach((itemId, index) => {
+        const element = document.getElementById(itemId);
+        if (element) {
+            // Verwenden von setTimeout, um die Animationen nacheinander zu starten
+            setTimeout(() => {
+                // Hier verwenden wir eine einfache Fade-In-Animation durch Hinzufügen einer Klasse
+                // Alternativ könnte man hier auch animateText verwenden, wenn ein Schreibmaschinen-Effekt gewünscht ist.
+                // Für Statistiken ist ein Fade-In oft besser lesbar.
+                element.classList.add('visible');
+            }, index * delayBetweenItems);
+        }
+    });
+}
+
 
 function startQuestions(){show('questionsIntro','questions');renderQ()}
 
