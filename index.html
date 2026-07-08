@@ -81,6 +81,16 @@ html,body{margin:0;overflow-x:hidden;font-family:-apple-system, BlinkMacSystemFo
     opacity: 1;
     transform: translateY(0);
 }
+/* Stil für die Elemente auf der "Fragen Intro"-Seite */
+.questions-intro-item {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+.questions-intro-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
 </style></head><body><div class='card'>
 <div id='intro' class='center'><h1>❤️ Nadine ❤️</h1><p id='intro-text1'>Hi Nadine 😊</p><p id='intro-text2'>Ich möchte dich etwas fragen ❤️</p><button class='btn' onclick="show('intro','question')">Weiter ❤️</button></div>
 <div id='question' class='center hidden'><h2>Möchtest du mit mir unser nächstes Date planen? 🥺</h2><button class='btn' onclick='showAnalysis()'>Ja 😍</button> <button id='noBtn' class='btn btnGray'>Nein 🙈</button></div>
@@ -98,7 +108,11 @@ html,body{margin:0;overflow-x:hidden;font-family:-apple-system, BlinkMacSystemFo
     <p id='stat-item-8' class='stat-item'>Weitere Treffen dringend empfohlen ❤️</p>
 </div>
 <button id='statsBtn' class='btn' onclick="show('stats','questionsIntro')">Weiter ❤️</button></div>
-<div id='questionsIntro' class='center hidden'><h2>Aber bevor wir weitermachen...</h2><p id='questionsIntro-text1'>hier ein paar Fragen 😊</p><button id='questionsIntroBtn' class='btn' onclick='startQuestions()'>Weiter ❤️</button></div>
+<div id='questionsIntro' class='center hidden'>
+    <h2 id='questionsIntro-title' class='questions-intro-item'>Aber bevor wir weitermachen...</h2>
+    <p id='questionsIntro-text1' class='questions-intro-item'>hier ein paar Fragen 😊</p>
+    <button id='questionsIntroBtn' class='btn questions-intro-item'>Weiter ❤️</button>
+</div>
 <div id='questions' class='hidden left'><div id='progress'></div><div id='q'></div></div>
 <div id='plan' class='hidden center'><h2>Date planen ❤️</h2>
 <div id='date-input-container'>
@@ -190,7 +204,7 @@ function show(a,b){
             if (b === 'result') {
                 animateResultPage();
             }
-            if (b === 'questionsIntro') { // Animation für die "Aber bevor wir weitermachen..." Seite
+            if (b === 'questionsIntro') {
                 animateQuestionsIntroPage();
             }
         }, 50);
@@ -282,6 +296,7 @@ function animateResultPage() {
 // --- Funktion zum Animieren der Elemente auf der "Fragen Intro"-Seite ---
 function animateQuestionsIntroPage() {
     const introElements = [
+        'questionsIntro-title', // Die Überschrift
         'questionsIntro-text1', // Der Text "hier ein paar Fragen 😊"
         'questionsIntroBtn'     // Der "Weiter ❤️" Button
     ];
