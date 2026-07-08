@@ -1,4 +1,7 @@
-<!DOCTYPE html><html lang='de'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Nadine V8</title><style>html,body{margin:0;overflow-x:hidden;font-family:Arial,sans-serif;background:linear-gradient(135deg,#ff5f8a,#ff7eb3,#ffc2d1)}.card{max-width:650px;margin:20px auto;background:#fff;border-radius:25px;padding:25px;box-sizing:border-box}.center{text-align:center}.left{text-align:left}.hidden{display:none}.btn{background:#ff2f6d;color:#fff;border:none;padding:12px 18px;border-radius:12px;cursor:pointer}.btnGray{background:#ddd;color:#333}.field{width:100%;padding:12px;margin-top:10px;box-sizing:border-box;border:1px solid #ddd;border-radius:12px}.row{margin:12px 0}.wa{display:block;margin:20px auto;width:90%;max-width:420px;padding:14px;border-radius:12px;background:#25D366;color:white;text-align:center;text-decoration:none;font-weight:bold}.cal{display:block;width:100%;margin-top:10px;padding:14px;border:none;border-radius:12px;background:#4285f4;color:white;font-size:16px;cursor:pointer}.cal:hover{background:#357a3c}.cal:active{background:#2d6a33}#txt,#cert,#transfer{white-space:pre-wrap;word-break:break-word}.centered-text{text-align:center}.left-aligned-in-center{text-align:left;margin-left:auto;margin-right:auto;max-width:90%;}.cert-text{text-align:center; /* Zentriert den Zertifikatstext */}.canvas-container{margin-top:20px; border: 1px solid #eee; padding: 10px; border-radius: 12px; background-color: #f9f9f9;}.download-btn{background:#ff2f6d;color:#fff;border:none;padding:10px 15px;border-radius:10px;cursor:pointer;font-size:14px;margin-top:15px;display:inline-block;text-decoration:none;}</style></head><body><div class='card'>
+<!DOCTYPE html><html lang='de'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title>Nadine V8</title><style>
+html,body{margin:0;overflow-x:hidden;font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; background:linear-gradient(135deg,#ff5f8a,#ff7eb3,#ffc2d1); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;}
+.card{max-width:650px;margin:20px auto;background:#fff;border-radius:25px;padding:25px;box-sizing:border-box; box-shadow: 0 4px 15px rgba(0,0,0,0.1);}
+.center{text-align:center}.left{text-align:left}.hidden{display:none}.btn{background:#ff2f6d;color:#fff;border:none;padding:12px 18px;border-radius:12px;cursor:pointer;transition:background-color 0.3s ease, transform 0.2s ease; font-weight:bold}.btn:hover{background:#e02b5a}.btn:active{transform:scale(0.98)}.btnGray{background:#ddd;color:#333}.field{width:100%;padding:12px;margin-top:10px;box-sizing:border-box;border:1px solid #ddd;border-radius:12px;font-size:16px}.row{margin:12px 0}.wa{display:block;margin:20px auto;width:90%;max-width:420px;padding:14px;border-radius:12px;background:#25D366;color:white;text-align:center;text-decoration:none;font-weight:bold;transition:background-color 0.3s ease, transform 0.2s ease}.wa:hover{background:#128C7E}.wa:active{transform:scale(0.98)}.cal{display:block;width:100%;margin-top:10px;padding:14px;border:none;border-radius:12px;background:#4285f4;color:white;font-size:16px;cursor:pointer;transition:background-color 0.3s ease, transform 0.2s ease}.cal:hover{background:#357a3c}.cal:active{transform:scale(0.98)}.cal-download-btn{background:#ff2f6d;color:#fff;border:none;padding:10px 15px;border-radius:10px;cursor:pointer;font-size:14px;margin-top:15px;display:inline-block;text-decoration:none;transition:background-color 0.3s ease, transform 0.2s ease}.cal-download-btn:hover{background:#e02b5a}.cal-download-btn:active{transform:scale(0.98)}#txt,#cert,#transfer{white-space:pre-wrap;word-break:break-word}.centered-text{text-align:center}.left-aligned-in-center{text-align:left;margin-left:auto;margin-right:auto;max-width:90%;}.cert-text{text-align:center;}.progress-bar-container{width:100%;background-color:#eee;border-radius:12px;margin-top:15px;height:20px;overflow:hidden}.progress-bar{height:100%;background-color:#ff2f6d;border-radius:12px;transition:width 0.5s ease-out}.emoji-hover:hover{transform:scale(1.2);transition:transform 0.3s ease}.fade-in{-webkit-animation:fadeIn 0.5s ease forwards;-moz-animation:fadeIn 0.5s ease forwards;animation:fadeIn 0.5s ease forwards;opacity:0;transform:translateY(20px)}.fade-in.visible{-webkit-animation-fill-mode:forwards;-moz-animation-fill-mode:forwards;animation-fill-mode:forwards;opacity:1;transform:translateY(0)}.fade-out{-webkit-animation:fadeOut 0.5s ease forwards;-moz-animation:fadeOut 0.5s ease forwards;animation:fadeOut 0.5s ease forwards;opacity:1;transform:translateY(0)}.fade-out.hidden{-webkit-animation-fill-mode:forwards;-moz-animation-fill-mode:forwards;animation-fill-mode:forwards;opacity:0;transform:translateY(-20px)}@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}@keyframes fadeOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-20px)}}</style></head><body><div class='card'>
 <div id='intro' class='center'><h1>❤️ Nadine ❤️</h1><p>Hi Nadine 😊</p><p>Ich möchte dich etwas fragen ❤️</p><p><b>Fun Fact:</b><br>Florian hat diese Webseite wahrscheinlich öfter getestet als nötig 😇❤️</p><button class='btn' onclick="show('intro','question')">Weiter ❤️</button></div>
 <div id='question' class='center hidden'><h2>Möchtest du mit mir unser nächstes Date planen? 🥺</h2><button class='btn' onclick='showAnalysis()'>Ja 😍</button> <button id='noBtn' class='btn btnGray'>Nein 🙈</button></div>
 <div id='analysis' class='hidden left'><div id='txt'></div><br><button id='analysisBtn' class='btn hidden' onclick="show('analysis','stats')">Weiter ❤️</button></div>
@@ -12,10 +15,29 @@ let answers=[];
 // ✅ KALENDERDATEN GLOBAL SPEICHERN
 let calendarData = null;
 
-function show(a,b){document.getElementById(a).classList.add('hidden');document.getElementById(b).classList.remove('hidden')}
+// --- Sanftere Übergänge für Seitenwechsel ---
+function show(a,b){
+    const elementA = document.getElementById(a);
+    const elementB = document.getElementById(b);
 
-const nt=['Nein 🙈','Sicher? 🥺','Wirklich? 😢','Ganz sicher? 😭','Die Statistik empfiehlt Ja 📊','Florian wäre traurig 💔','Vielleicht doch Ja? 😇'];let ni=0;
-noBtn.onclick=()=>{ni++;if(ni<nt.length)noBtn.innerText=nt[ni];else noBtn.style.display='none'};
+    // Füge Fade-Out-Klasse hinzu
+    elementA.classList.add('fade-out');
+    elementA.classList.remove('visible');
+
+    // Warte auf das Ende der Transition, bevor das nächste Element angezeigt wird
+    elementA.addEventListener('transitionend', function handler() {
+        elementA.classList.add('hidden');
+        elementA.classList.remove('fade-out');
+        elementA.removeEventListener('transitionend', handler); // Event-Listener entfernen
+
+        // Nächstes Element anzeigen und sichtbar machen (Fade-In)
+        elementB.classList.remove('hidden');
+        // Kurze Verzögerung, um den Fade-In-Effekt zu ermöglichen
+        setTimeout(() => {
+            elementB.classList.add('visible');
+        }, 50);
+    }, { once: true });
+}
 
 function showAnalysis(){
     show('question','analysis');
@@ -26,6 +48,7 @@ function showAnalysis(){
         if(i>=t.length){
             clearInterval(v);
             analysisBtn.classList.remove('hidden');
+            analysisBtn.classList.add('visible'); // Button sichtbar machen
         }
     },15);
 }
@@ -43,16 +66,42 @@ const qs=[
 ];
 let qi=0;
 function renderQ(){
-    progress.textContent='Frage '+(qi+1)+' von '+qs.length+' ❤️';
+    // --- Visuelle Fortschrittsanzeige für Fragen ---
+    const progressBarContainer = document.getElementById('progress');
+    const progressWidth = ((qi + 1) / qs.length) * 100;
+    progressBarContainer.innerHTML = `
+        <div class="progress-bar-container">
+            <div class="progress-bar" style="width: ${progressWidth}%;"></div>
+        </div>
+        Frage ${(qi + 1)} von ${qs.length} ❤️
+    `;
+
+    const questionElement = document.getElementById('q');
+    questionElement.innerHTML = ''; // Vorherigen Inhalt leeren
+
     let d=qs[qi];
     if(d[1]==='text'){
-        q.innerHTML='<h3>'+d[0]+'</h3><textarea class="field" id="t" rows="4"></textarea><button class="btn" onclick="nextQ()">Weiter</button>';
+        questionElement.innerHTML='<h3>'+d[0]+'</h3><textarea class="field" id="t" rows="4"></textarea><button class="btn" onclick="nextQ()">Weiter</button>';
     } else {
         let h='<h3>'+d[0]+'</h3>';
-        d[1].forEach(v=>h+='<div class=row><label><input type=radio name=r value="'+v+'"> '+v+'</label></div>');
+        d[1].forEach((v, index) => {
+            // --- Dynamische Aktivitätsvorschläge (einfach) ---
+            let optionClass = '';
+            // Wenn es die Lieblingsaktivitäten-Frage ist und die Antwort passt, hebe die Option hervor
+            // Wir prüfen, ob answers[0] existiert und ob der Wert übereinstimmt.
+            if (qs[qi][0].includes('Welches Date war bisher dein Favorit?') && answers.length > 0 && answers[0] === v) {
+                optionClass = 'highlight-activity'; // CSS-Klasse für Hervorhebung
+            }
+            h+='<div class="row"><label><input type="radio" name="r" value="'+v+'" class="'+optionClass+'"> '+v+'</label></div>';
+        });
         h+='<button class="btn" onclick="nextQ()">Weiter</button>';
-        q.innerHTML=h;
+        questionElement.innerHTML=h;
     }
+    // Frage-Elemente sichtbar machen mit Fade-In
+    questionElement.classList.add('fade-in');
+    setTimeout(() => {
+        questionElement.classList.add('visible');
+    }, 50);
 }
 function nextQ(){
     let d=qs[qi];
@@ -67,8 +116,25 @@ function nextQ(){
         answers.push(r.value);
     }
     qi++;
-    if(qi<qs.length)renderQ();
-    else show('questions','plan');
+    // Frage-Elemente für den Fade-Out vorbereiten
+    const questionElement = document.getElementById('q');
+    questionElement.classList.remove('visible');
+    questionElement.classList.add('fade-out');
+
+    if(qi<qs.length) {
+        // Warte auf das Ende der Transition, bevor die nächste Frage geladen wird
+        questionElement.addEventListener('transitionend', function handler() {
+            renderQ();
+            questionElement.removeEventListener('transitionend', handler);
+        }, { once: true });
+    }
+    else {
+        // Warte auf das Ende der Transition, bevor zum Planungsbereich gewechselt wird
+        questionElement.addEventListener('transitionend', function handler() {
+            show('questions','plan');
+            questionElement.removeEventListener('transitionend', handler);
+        }, { once: true });
+    }
 }
 function toggleOther(){
     const o=document.getElementById('otherActivity');
@@ -246,7 +312,6 @@ function finish(){
     </div>`;
 
     // --- Date-Zertifikat ---
-    // Hier werden die ausgewählten Optionen eingefügt.
     let ct='🏆 OFFIZIELLES DATE-ZERTIFIKAT\n\nNadine ✅\nFlorian ✅\n\n📅 Datum: ' + d + '\n⏰ Uhrzeit: ' + tm + '\n✨ Aktivität: ' + activity + '\n\n--- Deine Antworten ---\n🏆 Lieblingsdate: ' + answers[0] + '\n⏰ Zeitgefühl: ' + answers[1] + '\n💭 Florian in einem Wort: ' + answers[2] + '\n📋 Treffen beschreiben: ' + answers[3] + '\n💌 Was du schätzt: ' + answers[4] + '\n💭 Worauf du dich freust: ' + answers[5] + '\n🦋 Gegenanalyse: ' + answers[6] + '\n\nNächstes Date bestätigt ❤️';
     resultHtml += `<div id="cert" class="cert-text"></div>`; // Zertifikatstext wird hier eingefügt
 
@@ -293,142 +358,9 @@ onclick="saveCalendar()">
 Damit du unser Date nicht vergisst 🥰
 </p>
 `;
-                // --- NEUER BUTTON ZUM DOWNLOAD DES ZERTIFIKATS ALS BILD ---
-                transfer.innerHTML += `
-<br><br>
-<button class="btn download-btn" id="downloadCertBtn">🖼️ Zertifikat als Bild herunterladen</button>
-`;
-                // Event Listener für den neuen Download-Button hinzufügen
-                document.getElementById('downloadCertBtn').addEventListener('click', downloadCertificateAsImage);
             }
         }, 15);
     }
-}
-
-// --- Funktion zum Zeichnen des Zertifikats auf ein Canvas ---
-function drawCertificateOnCanvas() {
-    // Erstelle ein Canvas-Element, falls es noch nicht existiert
-    let canvas = document.getElementById('certificateCanvas');
-    if (!canvas) {
-        canvas = document.createElement('canvas');
-        canvas.id = 'certificateCanvas';
-        canvas.style.display = 'none'; // Versteckt das Canvas selbst
-        document.body.appendChild(canvas);
-    }
-    const ctx = canvas.getContext('2d');
-
-    // Zertifikatstext aus dem 'cert' Element holen
-    const certificateText = document.getElementById('cert').textContent;
-    const lines = certificateText.split('\n');
-
-    // Canvas-Dimensionen und Styling
-    const canvasWidth = 600;
-    // Höhe dynamisch anpassen basierend auf dem Inhalt
-    let calculatedHeight = 200; // Grundhöhe
-    const margin = 40;
-    const lineHeight = 35;
-    const titleLineHeight = 45;
-    const answerLineHeight = 30;
-    const smallLineHeight = 25;
-
-    // Titel
-    calculatedHeight += titleLineHeight * 2;
-    // Datum/Zeit/Aktivität
-    calculatedHeight += lineHeight * 4;
-    // Antworten Titel
-    calculatedHeight += lineHeight;
-    // Antworten Zeilen
-    calculatedHeight += answers.length * answerLineHeight;
-    // Letzte Zeile
-    calculatedHeight += lineHeight;
-
-    canvas.width = canvasWidth;
-    canvas.height = calculatedHeight;
-
-    // Hintergrund zeichnen
-    const gradient = ctx.createLinearGradient(0, 0, 0, canvasHeight);
-    gradient.addColorStop(0, '#ffc2d1'); // Helles Rosa oben
-    gradient.addColorStop(1, '#ff7eb3'); // Dunkleres Rosa unten
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-    // Styling für den Text
-    ctx.fillStyle = '#fff'; // Weißer Text
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-
-    let currentY = margin;
-
-    // Titel zeichnen
-    ctx.font = 'bold 36px Arial';
-    ctx.fillText('🏆 OFFIZIELLES DATE-ZERTIFIKAT 🏆', canvasWidth / 2, currentY);
-    currentY += titleLineHeight * 2;
-
-    // Daten zeichnen
-    ctx.font = 'bold 20px Arial';
-    ctx.fillStyle = '#fff';
-    ctx.fillText(`Nadine ✅  Florian ✅`, canvasWidth / 2, currentY);
-    currentY += lineHeight;
-    ctx.fillText(`📅 Datum: ${calendarData.date}`, canvasWidth / 2, currentY);
-    currentY += lineHeight;
-    ctx.fillText(`⏰ Uhrzeit: ${calendarData.time}`, canvasWidth / 2, currentY);
-    currentY += lineHeight;
-    ctx.fillText(`✨ Aktivität: ${calendarData.activity}`, canvasWidth / 2, currentY);
-    currentY += lineHeight * 2;
-
-    // Antworten zeichnen
-    ctx.font = 'bold 18px Arial';
-    ctx.fillStyle = '#fff';
-    ctx.fillText('--- Deine Antworten ---', canvasWidth / 2, currentY);
-    currentY += lineHeight;
-
-    const answerLines = [
-        `🏆 Lieblingsdate: ${answers[0]}`,
-        `⏰ Zeitgefühl: ${answers[1]}`,
-        `💭 Florian in einem Wort: ${answers[2]}`,
-        `📋 Treffen beschreiben: ${answers[3]}`,
-        `💌 Was du schätzt: ${answers[4]}`,
-        `💭 Worauf du dich freust: ${answers[5]}`,
-        `🦋 Gegenanalyse: ${answers[6]}`
-    ];
-
-    answerLines.forEach(line => {
-        // Einfacher Textumbruch: Wenn die Zeile zu lang ist, wird sie abgeschnitten oder überlappt.
-        // Für eine korrekte Textumbruchlogik müsste man die Textbreite messen und Zeilen manuell umbrechen.
-        ctx.fillText(line, canvasWidth / 2, currentY);
-        currentY += answerLineHeight;
-    });
-    currentY += lineHeight;
-
-    ctx.font = 'italic 16px Arial';
-    ctx.fillStyle = '#eee';
-    ctx.fillText('Nächstes Date dringend empfohlen ❤️', canvasWidth / 2, currentY);
-
-    return canvas;
-}
-
-// --- Funktion zum Herunterladen des Zertifikats als Bild ---
-function downloadCertificateAsImage() {
-    const canvas = drawCertificateOnCanvas();
-    if (!canvas) {
-        alert("Konnte das Zertifikat nicht für die Bildgenerierung vorbereiten.");
-        return;
-    }
-
-    // Konvertiere Canvas zu PNG Data URL
-    const dataURL = canvas.toDataURL('image/png'); // Oder 'image/jpeg'
-
-    // Erstelle einen temporären Link zum Herunterladen
-    const a = document.createElement('a');
-    a.href = dataURL;
-    a.download = 'DateZertifikat.png'; // Dateiname für den Download
-
-    document.body.appendChild(a);
-    a.click();
-
-    // Cleanup
-    document.body.removeChild(a);
-    // URL.revokeObjectURL(dataURL); // dataURL muss nicht revokt werden
 }
 
 </script></body></html>
