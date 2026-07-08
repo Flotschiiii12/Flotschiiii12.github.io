@@ -85,10 +85,11 @@ function animateText(elementId, text, delay = 15, callback) {
         if (callback) callback();
         return;
     }
-    element.textContent = ''; // Sicherstellen, dass das Element leer ist
+    element.innerHTML = ''; // Sicherstellen, dass das Element leer ist
     let i = 0;
     const interval = setInterval(() => {
-        element.textContent += text.charAt(i);
+        // Verwende innerHTML, um HTML-Tags korrekt zu rendern
+        element.innerHTML += text.charAt(i);
         i++;
         if (i >= text.length) {
             clearInterval(interval);
@@ -106,11 +107,11 @@ function show(a,b){
     elementA.classList.add('fade-out');
     elementA.classList.remove('visible');
 
-    // Warte auf das Ende der Transition, bevor das nächste Element angezeigt wird
-    elementA.addEventListener('transitionend', function handler() {
+    // Warte auf das Ende der Animation, bevor das nächste Element angezeigt wird
+    elementA.addEventListener('animationend', function handler() { // <-- Ersetzt transitionend durch animationend
         elementA.classList.add('hidden');
         elementA.classList.remove('fade-out');
-        elementA.removeEventListener('transitionend', handler); // Event-Listener entfernen
+        elementA.removeEventListener('animationend', handler); // Event-Listener entfernen
 
         // Nächstes Element anzeigen und sichtbar machen (Fade-In)
         elementB.classList.remove('hidden');
@@ -215,7 +216,11 @@ function showQuestionsIntroAnimation() {
 }
 
 
-function startQuestions(){show('questionsIntro','questions');renderQ()}
+function startQuestions(){
+    show('questionsIntro','questions');
+    showQuestionsIntroAnimation(); // <-- showQuestionsIntroAnimation wird hier aufgerufen
+    renderQ();
+}
 
 const qs=[
     ['🏆 Welches Date war bisher dein Favorit?',['Eis essen 🍦','Billard 🎱','Wandern 🥾','Spaziergang 🌳','Kino 🍿']],
@@ -288,17 +293,17 @@ function nextQ(){
     questionElement.classList.add('fade-out');
 
     if(qi<qs.length) {
-        // Warte auf das Ende der Transition, bevor die nächste Frage geladen wird
-        questionElement.addEventListener('transitionend', function handler() {
+        // Warte auf das Ende der Animation, bevor die nächste Frage geladen wird
+        questionElement.addEventListener('animationend', function handler() { // <-- Ersetzt transitionend durch animationend
             renderQ();
-            questionElement.removeEventListener('transitionend', handler);
+            questionElement.removeEventListener('animationend', handler);
         }, { once: true });
     }
     else {
-        // Warte auf das Ende der Transition, bevor zum Planungsbereich gewechselt wird
-        questionElement.addEventListener('transitionend', function handler() {
+        // Warte auf das Ende der Animation, bevor zum Planungsbereich gewechselt wird
+        questionElement.addEventListener('animationend', function handler() { // <-- Ersetzt transitionend durch animationend
             show('questions','plan');
-            questionElement.removeEventListener('transitionend', handler);
+            questionElement.removeEventListener('animationend', handler);
         }, { once: true });
     }
 }
