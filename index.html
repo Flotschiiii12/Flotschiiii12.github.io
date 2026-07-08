@@ -71,6 +71,16 @@ html,body{margin:0;overflow-x:hidden;font-family:-apple-system, BlinkMacSystemFo
     margin-right: auto;
     text-align: center; /* Zentriert den Text innerhalb des Buttons */
 }
+/* Stil für die Frage-Elemente auf der Fragen-Seite */
+#q {
+    opacity: 0; /* Standardmäßig unsichtbar */
+    transform: translateY(20px); /* Startposition für Fade-In */
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out; /* Übergangseffekte */
+}
+#q.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
 </style></head><body><div class='card'>
 <div id='intro' class='center'><h1>❤️ Nadine ❤️</h1><p id='intro-text1'>Hi Nadine 😊</p><p id='intro-text2'>Ich möchte dich etwas fragen ❤️</p><button class='btn' onclick="show('intro','question')">Weiter ❤️</button></div>
 <div id='question' class='center hidden'><h2>Möchtest du mit mir unser nächstes Date planen? 🥺</h2><button class='btn' onclick='showAnalysis()'>Ja 😍</button> <button id='noBtn' class='btn btnGray'>Nein 🙈</button></div>
@@ -88,7 +98,7 @@ html,body{margin:0;overflow-x:hidden;font-family:-apple-system, BlinkMacSystemFo
     <p id='stat-item-8' class='stat-item'>Weitere Treffen dringend empfohlen ❤️</p>
 </div>
 <button id='statsBtn' class='btn' onclick="show('stats','questionsIntro')">Weiter ❤️</button></div>
-<div id='questionsIntro' class='center hidden'><h2>Aber bevor wir weitermachen...</h2><p>hier ein paar Fragen 😊</p><button class='btn' onclick='startQuestions()'>Weiter ❤️</button></div>
+<div id='questionsIntro' class='center hidden'><h2>Aber bevor wir weitermachen...</h2><p id='questionsIntro-text1'>hier ein paar Fragen 😊</p><button id='questionsIntroBtn' class='btn' onclick='startQuestions()'>Weiter ❤️</button></div>
 <div id='questions' class='hidden left'><div id='progress'></div><div id='q'></div></div>
 <div id='plan' class='hidden center'><h2>Date planen ❤️</h2>
 <div id='date-input-container'>
@@ -135,8 +145,6 @@ let calendarData = null;
 function animateText(elementId, text, delay = 15, callback) {
     const element = document.getElementById(elementId);
     if (!element) {
-        // Wenn das Element nicht gefunden wird, rufe den Callback sofort auf, falls vorhanden.
-        // Dies verhindert Fehler, falls ein Element aus irgendeinem Grund fehlt.
         if (callback) callback();
         return;
     }
@@ -172,17 +180,18 @@ function show(a,b){
         // Kurze Verzögerung, um den Fade-In-Effekt zu ermöglichen
         setTimeout(() => {
             elementB.classList.add('visible');
-            // --- NEU: Animationen für Intro-Texte starten, wenn #intro sichtbar wird ---
-            if (b === 'intro') { // Wenn das Intro-Element gerade angezeigt wird
+            // --- Animationen starten, wenn das neue Element sichtbar wird ---
+            if (b === 'intro') {
                 animateIntroTexts();
             }
-            // --- NEU: Animationen für Statistik-Texte starten, wenn #stats sichtbar wird ---
             if (b === 'stats') {
                 animateStats();
             }
-            // --- NEU: Animationen für Ergebnis-Texte starten, wenn #result sichtbar wird ---
             if (b === 'result') {
                 animateResultPage();
+            }
+            if (b === 'questionsIntro') { // Animation für die "Aber bevor wir weitermachen..." Seite
+                animateQuestionsIntroPage();
             }
         }, 50);
     }, { once: true });
@@ -193,19 +202,15 @@ function animateIntroTexts() {
     const text1 = 'Hi Nadine 😊';
     const text2 = 'Ich möchte dich etwas fragen ❤️';
 
-    // Verwende setTimeout, um sicherzustellen, dass die Elemente im DOM sind, bevor die Animation beginnt.
-    // Dies ist besonders wichtig, wenn die show-Funktion die Elemente gerade erst sichtbar gemacht hat.
     setTimeout(() => {
-        animateText('intro-text1', text1, 25, () => { // Etwas langsamer für den ersten Text
-            animateText('intro-text2', text2, 20); // Mittlere Geschwindigkeit
+        animateText('intro-text1', text1, 25, () => {
+            animateText('intro-text2', text2, 20);
         });
-    }, 100); // Kleine Verzögerung, um sicherzustellen, dass alles gerendert ist
+    }, 100);
 }
-
 
 function showAnalysis(){
     show('question','analysis');
-    // --- NEUER TEXT FÜR DIE ANALYSE (INTEGRIERT AUS REVISION V8.4.5) ---
     let t=`Nadine-Kompatibilität wird berechnet... ❤️
 
 ✅ Sehr sympathisch 😊
@@ -224,13 +229,12 @@ Nächstes Date dringend empfohlen ❤️`;
     let i=0;
     const txtElement = document.getElementById('txt');
     const analysisBtn = document.getElementById('analysisBtn');
-    analysisBtn.classList.add('hidden'); // Sicherstellen, dass der Button versteckt ist
+    analysisBtn.classList.add('hidden');
 
     const interval = setInterval(()=>{
         txtElement.textContent=t.slice(0,++i);
         if(i>=t.length){
             clearInterval(interval);
-            // Hier wird der Button sichtbar, NACHDEM der Text fertig geschrieben ist
             analysisBtn.classList.remove('hidden');
             analysisBtn.classList.add('visible');
         }
@@ -243,12 +247,11 @@ function animateStats() {
         'stat-item-1', 'stat-item-2', 'stat-item-3', 'stat-item-4', 'stat-item-5',
         'stat-item-6', 'stat-item-7', 'stat-item-8'
     ];
-    const delayBetweenItems = 100; // Millisekunden Verzögerung zwischen den einzelnen Zeilen
+    const delayBetweenItems = 100;
 
     statItems.forEach((itemId, index) => {
         const element = document.getElementById(itemId);
         if (element) {
-            // Verwenden von setTimeout, um die Animationen nacheinander zu starten
             setTimeout(() => {
                 element.classList.add('visible');
             }, index * delayBetweenItems);
@@ -259,14 +262,32 @@ function animateStats() {
 // --- Funktion zum Animieren der Elemente auf der Ergebnis-Seite ---
 function animateResultPage() {
     const resultElements = [
-        'result-title', // Die Überschrift
-        'result-message', // Die kleine Nachricht
-        'cert', // Das Zertifikat
-        'transfer' // Die Datenübertragung
+        'result-title',
+        'result-message',
+        'cert',
+        'transfer'
     ];
-    const delayBetweenElements = 150; // Verzögerung zwischen den Elementen
+    const delayBetweenElements = 150;
 
-    resultElements.forEach((elementId, index) => { // elementClassOrId umbenannt zu elementId für Klarheit
+    resultElements.forEach((elementId, index) => {
+        const element = document.getElementById(elementId);
+        if (element) {
+            setTimeout(() => {
+                element.classList.add('visible');
+            }, index * delayBetweenElements);
+        }
+    });
+}
+
+// --- Funktion zum Animieren der Elemente auf der "Fragen Intro"-Seite ---
+function animateQuestionsIntroPage() {
+    const introElements = [
+        'questionsIntro-text1', // Der Text "hier ein paar Fragen 😊"
+        'questionsIntroBtn'     // Der "Weiter ❤️" Button
+    ];
+    const delayBetweenElements = 150;
+
+    introElements.forEach((elementId, index) => {
         const element = document.getElementById(elementId);
         if (element) {
             setTimeout(() => {
@@ -293,7 +314,6 @@ function renderQ(){
     const questionElement = document.getElementById('q');
 
     // --- Klassen zurücksetzen, um Animationen korrekt auszuführen ---
-    // Dies ist die von Ihnen empfohlene Korrektur, um sicherzustellen, dass die Animationen bei jedem Wechsel korrekt funktionieren.
     questionElement.classList.remove('fade-in', 'fade-out', 'visible');
     questionElement.innerHTML = ''; // Vorherigen Inhalt leeren
 
@@ -303,11 +323,9 @@ function renderQ(){
     } else {
         let h='<h3>'+d[0]+'</h3>';
         d[1].forEach((v, index) => {
-            // --- Dynamische Aktivitätsvorschläge (einfach) ---
             let optionClass = '';
-            // Wenn es die Lieblingsaktivitäten-Frage ist und die Antwort passt, hebe die Option hervor
             if (qs[qi][0].includes('Welches Date war bisher dein Favorit?') && answers.length > 0 && answers[0] === v) {
-                optionClass = 'highlight-activity'; // CSS-Klasse für Hervorhebung
+                optionClass = 'highlight-activity';
             }
             h+='<div class="row"><label><input type="radio" name="r" value="'+v+'" class="'+optionClass+'"> '+v+'</label></div>';
         });
@@ -326,7 +344,6 @@ function renderQ(){
     `;
 
     // Frage-Elemente sichtbar machen mit Fade-In
-    // Kurze Verzögerung, um sicherzustellen, dass der Inhalt gerendert ist
     setTimeout(() => {
         questionElement.classList.add('fade-in');
         questionElement.classList.add('visible');
@@ -351,14 +368,12 @@ function nextQ(){
     questionElement.classList.add('fade-out');
 
     if(qi<qs.length) {
-        // Warte auf das Ende der Transition, bevor die nächste Frage geladen wird
         questionElement.addEventListener('transitionend', function handler() {
             renderQ();
             questionElement.removeEventListener('transitionend', handler);
         }, { once: true });
     }
     else {
-        // Warte auf das Ende der Transition, bevor zum Planungsbereich gewechlt wird
         questionElement.addEventListener('transitionend', function handler() {
             show('questions','plan');
             questionElement.removeEventListener('transitionend', handler);
@@ -369,7 +384,7 @@ function nextQ(){
 // --- Funktion zur Steuerung des "Etwas anderes..." Feldes für Aktivitäten ---
 function toggleOtherActivityField(){
     const otherActivityInput = document.getElementById('otherActivity');
-    const activitySelect = document.getElementById('act'); // Referenz zum Aktivitäts-Select
+    const activitySelect = document.getElementById('act');
 
     if(activitySelect.value === '✏️ Etwas anderes ...'){
         otherActivityInput.classList.remove('hidden');
@@ -385,7 +400,7 @@ function createIcsContent(
     dateStr,
     timeStr,
     activity,
-    durationHours // Neue Parameter für die Dauer
+    durationHours
 ){
 
     const start =
@@ -394,28 +409,24 @@ function createIcsContent(
         timeStr.replace(/:/g,'') +
         '00';
 
-    // Dauer berechnen
-    let duration = parseInt(durationHours); // Dauer in Stunden
+    let duration = parseInt(durationHours);
 
-    // "Open End" behandeln: Setze eine sehr lange Dauer, z.B. 24 Stunden
-    if (duration === 99) { // 99 ist der Wert für "Open End"
-        duration = 24; // Setze auf 24 Stunden als Standard für Open End
+    if (duration === 99) {
+        duration = 24;
     }
 
-    // Endzeit berechnen
     const endDate = new Date(dateStr + 'T' + timeStr);
     endDate.setHours(endDate.getHours() + duration);
 
     const end =
         endDate.getFullYear() +
-        String(endDate.getMonth()+1).padStart(2,'0') + // Monate sind 0-basiert, daher +1
+        String(endDate.getMonth()+1).padStart(2,'0') +
         String(endDate.getDate()).padStart(2,'0') +
         'T' +
         String(endDate.getHours()).padStart(2,'0') +
         String(endDate.getMinutes()).padStart(2,'0') +
         '00';
 
-    // Vereinfachte ICS-Struktur für maximale Kompatibilität
     return `BEGIN:VCALENDAR
 VERSION:2.0
 BEGIN:VEVENT
@@ -429,7 +440,7 @@ END:VCALENDAR`;
 
 // --- Funktion zum Herunterladen einer Datei (wird von saveCalendar() verwendet) ---
 function downloadFile(filename, content, mimeType = 'text/plain') {
-    console.log("downloadFile called with:", filename, mimeType); // Debugging
+    console.log("downloadFile called with:", filename, mimeType);
     try {
         const blob = new Blob([content], { type: mimeType });
         const url = URL.createObjectURL(blob);
@@ -437,16 +448,16 @@ function downloadFile(filename, content, mimeType = 'text/plain') {
         a.href = url;
         a.download = filename;
         document.body.appendChild(a);
-        console.log("Attempting to click download link..."); // Debugging
+        console.log("Attempting to click download link...");
         a.click();
-        console.log("Download link clicked."); // Debugging
+        console.log("Download link clicked.");
         setTimeout(() => {
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            console.log("Cleanup done."); // Debugging
+            console.log("Cleanup done.");
         }, 100);
     } catch (e) {
-        console.error("Error in downloadFile:", e); // Debugging
+        console.error("Error in downloadFile:", e);
         alert("Fehler beim Erstellen des Downloads. Bitte versuchen Sie es erneut.");
     }
 }
@@ -465,7 +476,7 @@ function saveCalendar(){
             calendarData.date,
             calendarData.time,
             calendarData.activity,
-            calendarData.duration // Dauer übergeben
+            calendarData.duration
         );
 
     const blob =
@@ -499,7 +510,7 @@ function saveCalendar(){
 
 
 function finish(){
-    let activity=document.getElementById('act').value; // Aktivität aus dem Select auslesen
+    let activity=document.getElementById('act').value;
     const otherInput = document.getElementById('otherActivity');
     if(activity==='✏️ Etwas anderes ...'){
         if (!otherInput.value.trim()) {
@@ -510,27 +521,24 @@ function finish(){
     }
     let d=document.getElementById('date').value;
     let tm=document.getElementById('time').value;
-    let duration=document.getElementById('duration').value; // Dauer aus neuem Dropdown auslesen
+    let duration=document.getElementById('duration').value;
 
-    if (!d || !tm || !duration) { // Datum, Zeit und Dauer müssen ausgewählt sein
+    if (!d || !tm || !duration) {
         alert('Bitte wähle ein Datum, eine Uhrzeit und eine Dauer für unser Date! ❤️');
         return;
     }
 
-    // Erstellung der Nachricht für WhatsApp
     let msg=`Hey Florian ❤️\n\nIch habe JA gesagt! 🥰\n\n📅 Unser Date:\nDatum: ${d}\n\n⏰ Uhrzeit:\n${tm}\n\n✨ Aktivität:\n${activity}\n\n⏳ Dauer: ${duration === '99' ? 'Open End' : duration + ' Stunde(n)'}\n\nUnd hier noch meine Antworten 😉❤️\n\n🏆 Lieblingsdate:\n${answers[0]}\n\n⏰ Zeit bei unseren Treffen:\n${answers[1]}\n\n💭 Florian in einem Wort:\n${answers[2]}\n\n📋 Unsere bisherigen Treffen:\n${answers[3]}\n\n💌 Was ich an Florian am meisten schätze:\n${answers[4]}\n\n💭 Worauf ich mich am meisten freue:\n${answers[5]}\n\n🦋 Gegenanalyse:\n${answers[6]}`;
 
-    // ✅ FINISH() ERWEITERT
     calendarData = {
         date: d,
         time: tm,
-        activity: activity, // Aktivität speichern
-        duration: duration // Dauer speichern
+        activity: activity,
+        duration: duration
     };
 
     show('plan','result');
 
-    // --- Erstelle das Ergebnis-HTML dynamisch ---
     let resultHtml = `
         <div id="result-title" class="result-item"><h2>✅ DATE BESTÄTIGT ❤️</h2></div>
         <div id='result-message' class='left-aligned-in-center result-item'>
@@ -543,45 +551,37 @@ function finish(){
         </div>
     `;
 
-    // --- Date-Zertifikat ---
-    let ct = '🏆 OFFIZIELLES DATE-ZERTIFIKAT\n\nNadine ✅\nFlorian ✅\n\n📅 Datum: ' + d + '\n⏰ Uhrzeit: ' + tm + '\n✨ Aktivität: ' + activity + '\n⏳ Dauer: ' + (duration === '99' ? 'Open End' : duration + ' Stunde(n)') + '\n\n--- Deine Antworten ---\n🏆 Lieblingsdate: ' + answers[0] + '\n⏰ Zeitgefühl: ' + answers[1] + '\n💭 Florian in einem Wort: ' + answers[2] + '\n📋 Treffen beschreiben: ' + answers[3] + '\n💌 Was du schätzt: ' + answers[4] + '\n💭 Worauf du dich freust: ' + answers[5] + '\n🦋 Gegenanalyse: ' + answers[6] + '\n\nNächstes Date bestätigt ❤️';
-    resultHtml += `<div id="cert" class="cert-text result-item"></div>`; // Zertifikatstext wird hier eingefügt
+    let ct='🏆 OFFIZIELLES DATE-ZERTIFIKAT\n\nNadine ✅\nFlorian ✅\n\n📅 Datum: ' + d + '\n⏰ Uhrzeit: ' + tm + '\n✨ Aktivität: ' + activity + '\n⏳ Dauer: ' + (duration === '99' ? 'Open End' : duration + ' Stunde(n)') + '\n\n--- Deine Antworten ---\n🏆 Lieblingsdate: ' + answers[0] + '\n⏰ Zeitgefühl: ' + answers[1] + '\n💭 Florian in einem Wort: ' + answers[2] + '\n📋 Treffen beschreiben: ' + answers[3] + '\n💌 Was du schätzt: ' + answers[4] + '\n💭 Worauf du dich freust: ' + answers[5] + '\n🦋 Gegenanalyse: ' + answers[6] + '\n\nNächstes Date bestätigt ❤️';
+    resultHtml += `<div id="cert" class="cert-text result-item"></div>`;
 
-    // --- Simulierte Datenübertragung ---
-    resultHtml += `<div id="transfer" class="left result-item"></div>`; // Platzhalter für die simulierte Übertragung
+    resultHtml += `<div id="transfer" class="left result-item"></div>`;
 
-    // Füge das gesamte HTML in den 'out'-Container ein
     document.getElementById('out').innerHTML = resultHtml;
 
-    // --- Zertifikat mit Schreibmaschinen-Effekt ---
     const certTextElement = document.getElementById('cert');
-    certTextElement.textContent = ''; // Sicherstellen, dass es leer ist, bevor die Animation beginnt
-    let certAnimationInterval = setInterval(() => {
+    certTextElement.textContent = '';
+    let certAnimationInterval = setInterval(()=>{
         certTextElement.textContent = ct.slice(0, certTextElement.textContent.length + 1);
         if (certTextElement.textContent.length >= ct.length) {
             clearInterval(certAnimationInterval);
-            // Sobald das Zertifikat fertig geschrieben ist, starten wir die Datenübertragung
             startTransferSimulation();
         }
-    }, 15); // Geschwindigkeit der Schreibmaschine
+    }, 15);
 
-    // --- Funktion zur Simulation der Datenübertragung und Anzeige der Buttons ---
     function startTransferSimulation() {
         let transferText = `📡 Datenübertragung ausstehend...\nVerbinde mit Florian...\n✅ Überprüfe Schmetterlings-Analyse...\n✅ Verpacke Antworten...\n✅ Übertragung bereit ❤️\n\n⚠️ Letzter Schritt erforderlich:\nDie Ergebnisse wurden vorbereitet,\naber noch nicht an Florian gesendet.\nOhne den nächsten Schritt\nbekommt er deine Antworten leider nicht 😇\n👇 Bitte jetzt übertragen 👇`;
         let j = 0;
         const transferElement = document.getElementById('transfer');
-        transferElement.textContent = ''; // Sicherstellen, dass das Element leer ist
+        transferElement.textContent = '';
 
         const transferWriter = setInterval(() => {
             transferElement.textContent = transferText.slice(0, ++j);
             if (j >= transferText.length) {
                 clearInterval(transferWriter);
 
-                // WhatsApp Button (jetzt grün und zentriert dank .wa Klasse)
                 const waLink = `https://api.whatsapp.com/send?phone=4915758309186&text=${encodeURIComponent(msg)}`;
                 transferElement.innerHTML += `<br><br><a class="wa" href="${waLink}" target="_blank">📲 Antworten & Date an Florian senden</a>`;
 
-                // Kalender Button
                 transferElement.innerHTML += `
 <br><br>
 
@@ -599,4 +599,69 @@ Damit du unser Date nicht vergisst 🥰
         }, 15);
     }
 }
+
+// --- NEUE FUNKTION: Datum und Uhrzeit als Text anzeigen und Input verstecken/anzeigen ---
+function updateDateTimeDisplay() {
+    const dateInput = document.getElementById('date');
+    const timeInput = document.getElementById('time');
+    const dateTextSpan = document.getElementById('date-text');
+    const timeTextSpan = document.getElementById('time-text');
+
+    // Datum
+    if (dateInput.value) {
+        dateTextSpan.textContent = `Datum: ${dateInput.value}`;
+        dateTextSpan.classList.add('hidden');
+        dateInput.classList.remove('hidden');
+        dateInput.classList.add('visible-input');
+    } else {
+        dateTextSpan.textContent = 'Datum auswählen';
+        dateTextSpan.classList.remove('hidden');
+        dateInput.classList.add('hidden');
+    }
+
+    // Uhrzeit
+    if (timeInput.value) {
+        timeTextSpan.textContent = `Uhrzeit: ${timeInput.value}`;
+        timeTextSpan.classList.add('hidden');
+        timeInput.classList.remove('hidden');
+        timeInput.classList.add('visible-input');
+    } else {
+        timeTextSpan.textContent = 'Uhrzeit auswählen';
+        timeTextSpan.classList.remove('hidden');
+        timeInput.classList.add('hidden');
+    }
+}
+
+// --- Funktion, die das Eingabefeld anzeigt, wenn auf den Text geklickt wird ---
+function showInput(inputId) {
+    const textSpan = document.getElementById(inputId + '-text');
+    const inputField = document.getElementById(inputId);
+
+    if (textSpan && inputField) {
+        textSpan.classList.add('hidden');
+        inputField.classList.remove('hidden');
+        inputField.classList.add('visible-input');
+        inputField.focus();
+    }
+}
+
+// --- Event Listener für Datum und Uhrzeit ---
+document.addEventListener('DOMContentLoaded', () => {
+    const dateInput = document.getElementById('date');
+    const timeInput = document.getElementById('time');
+    const dateTextSpan = document.getElementById('date-text');
+    const timeTextSpan = document.getElementById('time-text');
+
+    updateDateTimeDisplay();
+
+    dateTextSpan.addEventListener('click', () => showInput('date'));
+    timeTextSpan.addEventListener('click', () => showInput('time'));
+
+    dateInput.addEventListener('change', updateDateTimeDisplay);
+    timeInput.addEventListener('change', updateDateTimeDisplay);
+
+    // --- Initialen Intro-Text-Animationsstart ---
+    animateIntroTexts();
+});
+
 </script></body></html>
