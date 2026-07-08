@@ -1,10 +1,178 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nadine ❤️</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#ff6b8a;
+    margin:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.card{
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    width:90%;
+    max-width:500px;
+    text-align:center;
+}
+
+button{
+    padding:12px 20px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.yes{
+    background:#ff4d6d;
+    color:white;
+}
+
+.hidden{
+    display:none;
+}
+
+input,select{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    box-sizing:border-box;
+}
+</style>
+</head>
+
 <body>
 
-<button onclick="alert('Funktioniert!')">
-Klick mich
+<div class="card">
+
+<div id="start">
+<h1>❤️ Nadine ❤️</h1>
+<p>Möchtest du mit mir auf ein Date gehen?</p>
+
+<button class="yes" onclick="zeigeFormular()">
+Ja 😍
+</button>
+</div>
+
+<div id="formular" class="hidden">
+
+<input type="date" id="datum">
+
+<input type="time" id="uhrzeit">
+
+<select id="aktivitaet">
+<option>Café ☕</option>
+<option>Kino 🍿</option>
+<option>Essen 🍝</option>
+<option>Spaziergang 🌳</option>
+</select>
+
+<br><br>
+
+<button class="yes" onclick="bestaetigen()">
+Bestätigen ❤️
 </button>
 
+</div>
+
+<div id="ergebnis" class="hidden">
+<h2>Perfekt ❤️</h2>
+<p id="ausgabe"></p>
+</div>
+
+</div>
+
+<script>
+
+function zeigeFormular(){
+    document.getElementById("start").classList.add("hidden");
+    document.getElementById("formular").classList.remove("hidden");
+}
+
+function bestaetigen(){
+
+    const datum =
+        document.getElementById("datum").value;
+
+    const uhrzeit =
+        document.getElementById("uhrzeit").value;
+
+    const aktivitaet =
+        document.getElementById("aktivitaet").value;
+
+    if(!datum || !uhrzeit){
+        alert("Bitte Datum und Uhrzeit auswählen.");
+        return;
+    }
+
+    document.getElementById("formular")
+        .classList.add("hidden");
+
+    document.getElementById("ergebnis")
+        .classList.remove("hidden");
+
+    document.getElementById("ausgabe").innerHTML =
+        "📅 " + datum + "<br>" +
+        "⏰ " + uhrzeit + "<br>" +
+        "✨ " + aktivitaet;
+}
+</script>
+<script>
+function bestaetigen(){
+
+    const datum =
+        document.getElementById("datum").value;
+
+    const uhrzeit =
+        document.getElementById("uhrzeit").value;
+
+    const aktivitaet =
+        document.getElementById("aktivitaet").value;
+
+    if(!datum || !uhrzeit){
+        alert("Bitte Datum und Uhrzeit auswählen.");
+        return;
+    }
+
+    document.getElementById("formular")
+        .classList.add("hidden");
+
+    document.getElementById("ergebnis")
+        .classList.remove("hidden");
+
+    document.getElementById("ausgabe").innerHTML =
+        "📅 " + datum + "<br>" +
+        "⏰ " + uhrzeit + "<br>" +
+        "✨ " + aktivitaet;
+
+    const nachricht =
+`Hey Florian ❤️
+
+Ich habe JA gesagt! 🥰
+
+📅 ${datum}
+⏰ ${uhrzeit}
+✨ ${aktivitaet}
+
+Ich freue mich schon ❤️`;
+
+    setTimeout(() => {
+        window.open(
+            "https://wa.me/4915758309186?text=" +
+            encodeURIComponent(nachricht),
+            "_blank"
+        );
+    }, 1000);
+}
+</script>
 </body>
 </html>
