@@ -207,6 +207,10 @@ function show(a,b){
             if (b === 'questionsIntro') {
                 animateQuestionsIntroPage();
             }
+            // --- NEU: renderQ() wird jetzt hier aufgerufen, nachdem die Fragen-Seite sichtbar ist ---
+            if (b === 'questions') {
+                renderQ();
+            }
         }, 50);
     }, { once: true });
 }
@@ -314,10 +318,9 @@ function animateQuestionsIntroPage() {
 
 
 function startQuestions(){
-    // Die show-Funktion wird nun die Animation für die nächste Seite starten.
-    // Wir müssen sicherstellen, dass der Button klickbar bleibt, bis die Transition abgeschlossen ist.
+    // Ruft show auf, um den Übergang zu initiieren.
+    // Die renderQ() Funktion wird dann innerhalb von show() aufgerufen, wenn die Zielseite sichtbar wird.
     show('questionsIntro','questions');
-    renderQ(); // Rendert die erste Frage
 }
 
 const qs=[
