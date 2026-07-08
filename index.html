@@ -20,6 +20,25 @@ function toggleOther(){const o=document.getElementById('otherActivity'); if(docu
 function finish(){let activity=document.getElementById('act').value; if(activity==='✏️ Etwas anderes ...'){activity=document.getElementById('otherActivity').value||'Eigene Idee ❤️';}let d=document.getElementById('date').value;let tm=document.getElementById('time').value;let msg=`Hey Florian ❤️\n\nIch habe JA gesagt! 🥰\n\n📅 Unser Date:\nDatum: ${d}\n\n⏰ Uhrzeit:\n${tm}\n\n✨ Aktivität:\n${activity}\n\nUnd hier noch meine Antworten 😉❤️\n\n🏆 Lieblingsdate:\n${answers[0]}\n\n⏰ Zeit bei unseren Treffen:\n${answers[1]}\n\n💭 Florian in einem Wort:\n${answers[2]}\n\n📋 Unsere bisherigen Treffen:\n${answers[3]}\n\n💌 Was ich an Florian am meisten schätze:\n${answers[4]}\n\n💭 Worauf ich mich am meisten freue:\n${answers[5]}\n\n🦋 Gegenanalyse:\n${answers[6]}`;
 let wa='https://api.whatsapp.com/send?phone=4915758309186&text='+encodeURIComponent(msg);
 show('plan','result');
-out.innerHTML='<h2>✅ DATE BESTÄTIGT ❤️</h2><div>💌 Kleine Nachricht<br><br>Ich freue mich wirklich immer, wenn wir Zeit miteinander verbringen 😊❤️<br><br>Und falls du es noch nicht gemerkt hast:<br><br>Du hast es geschafft, dass ich diese komplette Webseite für genau eine Person gebaut habe ❤️😇<br><br>(Und ja, das war die Arbeit wert 🥰)</div><div id="cert"></div><div id="transfer" class="left"></div>';
-let ct='🏆 OFFIZIELLES DATE-ZERTIFIKAT\n\nNadine ✅\nFlorian ✅\n\nDatum ✅\nUhrzeit ✅\nAktivität ✅\n\nNächstes Date bestätigt ❤️';let i=0;let c=setInterval(()=>{cert.textContent=ct.slice(0,++i);if(i>=ct.length){clearInterval(c);transfer.innerHTML='📡 Datenübertragung ausstehend...<br>✅ Verbinde mit Florian...<br>✅ Überprüfe Schmetterlings-Analyse...<br>✅ Verpacke Antworten...<br>✅ Übertragung bereit ❤️<br><br><b>⚠️ Letzter Schritt erforderlich</b><br><br>Die Ergebnisse wurden vorbereitet, aber noch nicht an Florian gesendet.<br>Ohne den nächsten Schritt bekommt er deine Antworten leider nicht 😇<br><br>👇 Bitte jetzt übertragen 👇<a class="wa" href="'+wa+'">📲 Antworten & Date an Florian senden</a>';}},12)}
+out.innerHTML='<h2>✅ DATE BESTÄTIGT ❤️</h2>' +
+'<a class="cal" href="#" download="DateMitFlorian.ics
+<div>💌 Kleine Nachricht<br><br>Ich freue mich wirklich immer, wenn wir Zeit miteinander verbringen 😊❤️<br><br>Und falls du es noch nicht gemerkt hast:<br><br>Du hast es geschafft, dass ich diese komplette Webseite für genau eine Person gebaut habe ❤️😇<br><br>(Und ja, das war die Arbeit wert 🥰)</div><div id="cert"></div><div id="transfer" class="left"></div>';
+let ct='🏆 OFFIZIELLES DATE-ZERTIFIKAT\n\nNadine ✅\nFlorian ✅\n\nDatum ✅\nUhrzeit ✅\nAktivität ✅\n\nNächstes Date bestätigt ❤️';let i=0;let c=setInterval(()=>{cert.textContent=ct.slice(0,++i);if(i>=ct.length){clearInterval(c);let transferText =`📡 Datenübertragung ausstehend...Verbinde mit Florian... ✅Überprüfe Schmetterlings-Analyse... ✅Verpacke Antworten... ✅Übertragung bereit ❤️⚠️ Letzter Schritt erforderlich
+Die Ergebnisse wurden vorbereitet,
+aber noch nicht an Florian gesendet.
+Ohne den nächsten Schritt
+bekommt er deine Antworten leider nicht 😇
+👇 Bitte jetzt übertragen 👇`;
+let j = 0;
+let transferWriter = setInterval(() => {
+    transfer.textContent = transferText.slice(0, ++j);
+
+    if (j >= transferText.length) {
+        clearInterval(transferWriter);
+
+        transfer.innerHTML =
+            transfer.textContent +
+            '<br><br>">📲 Antworten & Date an Florian senden</a>';
+    }
+}, 12);
 </script></body></html>
