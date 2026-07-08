@@ -127,51 +127,77 @@ function bestaetigen(){
 }
 </script>
 <script>
-function bestaetigen(){
+function confirmDate(){
 
-    const datum =
-        document.getElementById("datum").value;
+    let d = document.getElementById('date').value;
+    let t = document.getElementById('time').value;
+    let a = document.getElementById('activity').value;
 
-    const uhrzeit =
-        document.getElementById("uhrzeit").value;
-
-    const aktivitaet =
-        document.getElementById("aktivitaet").value;
-
-    if(!datum || !uhrzeit){
-        alert("Bitte Datum und Uhrzeit auswählen.");
+    if(!d || !t){
+        alert('Bitte Datum und Uhrzeit wählen ❤️');
         return;
     }
 
-    document.getElementById("formular")
-        .classList.add("hidden");
+    let start = new Date(d + 'T' + t);
+    let end = new Date(start.getTime() + 7200000);
 
-    document.getElementById("ergebnis")
-        .classList.remove("hidden");
+    let fmt = x =>
+        x.toISOString()
+         .replace(/[-:]/g,'')
+         .split('.')[0] + 'Z';
 
-    document.getElementById("ausgabe").innerHTML =
-        "📅 " + datum + "<br>" +
-        "⏰ " + uhrzeit + "<br>" +
-        "✨ " + aktivitaet;
+    let ics =
+`BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+SUMMARY:Date mit Florian ❤️
+DESCRIPTION:${a}
+DTSTART:${fmt(start)}
+DTEND:${fmt(end)}
+END:VEVENT
+END:VCALENDAR`;
+
+    let blob =
+        new Blob([ics], {type:'text/calendar'});
+
+    let url =
+        URL.createObjectURL(blob);
+
+    document.getElementById('step2')
+        .classList.add('hidden');
+
+    document.getElementById('step3')
+        .classList.remove('hidden');
+
+    document.getElementById('summary').innerHTML =
+        '📅 ' + d +
+        '<br>⏰ ' + t +
+        '<br>✨ ' + a;
 
     const nachricht =
 `Hey Florian ❤️
 
 Ich habe JA gesagt! 🥰
 
-📅 ${datum}
-⏰ ${uhrzeit}
-✨ ${aktivitaet}
+📅 ${d}
+⏰ ${t}
+✨ ${a}
 
 Ich freue mich schon ❤️`;
 
-    setTimeout(() => {
-        window.open(
-            "https://wa.me/4915758309186?text=" +
-            encodeURIComponent(nachricht),
-            "_blank"
-        );
-    }, 1000);
+    document.getElementById('calendar').innerHTML =
+
+        '<a class="btn" ' +
+        'download="DateMitFlorian.ics" ' +
+        'href="' + url + '">' +
+        '📅 Kalender hinzufügen' +
+        '</a>' +
+
+        '<br><br>' +
+
+        'https://wa.me/4915758309186?text=';
+
+    hearts(80);
 }
 </script>
 </body>
