@@ -111,7 +111,7 @@ html,body{margin:0;overflow-x:hidden;font-family:-apple-system, BlinkMacSystemFo
 <div id='questionsIntro' class='center hidden'>
     <h2 id='questionsIntro-title' class='questions-intro-item'>Aber bevor wir weitermachen...</h2>
     <p id='questionsIntro-text1' class='questions-intro-item'>hier ein paar Fragen 😊</p>
-    <button id='questionsIntroBtn' class='btn questions-intro-item'>Weiter ❤️</button>
+    <button id='questionsIntroBtn' class='btn questions-intro-item' onclick='startQuestions()'>Weiter ❤️</button>
 </div>
 <div id='questions' class='hidden left'><div id='progress'></div><div id='q'></div></div>
 <div id='plan' class='hidden center'><h2>Date planen ❤️</h2>
@@ -296,9 +296,9 @@ function animateResultPage() {
 // --- Funktion zum Animieren der Elemente auf der "Fragen Intro"-Seite ---
 function animateQuestionsIntroPage() {
     const introElements = [
-        'questionsIntro-title', // Die Überschrift
-        'questionsIntro-text1', // Der Text "hier ein paar Fragen 😊"
-        'questionsIntroBtn'     // Der "Weiter ❤️" Button
+        'questionsIntro-title',
+        'questionsIntro-text1',
+        'questionsIntroBtn'
     ];
     const delayBetweenElements = 150;
 
@@ -313,7 +313,12 @@ function animateQuestionsIntroPage() {
 }
 
 
-function startQuestions(){show('questionsIntro','questions');renderQ()}
+function startQuestions(){
+    // Die show-Funktion wird nun die Animation für die nächste Seite starten.
+    // Wir müssen sicherstellen, dass der Button klickbar bleibt, bis die Transition abgeschlossen ist.
+    show('questionsIntro','questions');
+    renderQ(); // Rendert die erste Frage
+}
 
 const qs=[
     ['🏆 Welches Date war bisher dein Favorit?',['Eis essen 🍦','Billard 🎱','Wandern 🥾','Spaziergang 🌳','Kino 🍿']],
