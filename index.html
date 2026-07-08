@@ -41,12 +41,12 @@ const qs=[
 let qi=0;
 function renderQ(){
     progress.textContent='Frage '+(qi+1)+' von '+qs.length+' ❤️';
-    let d=qs[qs.length-1][1][0]; // Holen des ersten Elements der Gegenanalyse-Liste für die letzte Frage
-    if(qs[qi][1]==='text'){
-        q.innerHTML='<h3>'+qs[qi][0]+'</h3><textarea class="field" id="t" rows="4"></textarea><button class="btn" onclick="nextQ()">Weiter</button>';
+    let d=qs[qi];
+    if(d[1]==='text'){
+        q.innerHTML='<h3>'+d[0]+'</h3><textarea class="field" id="t" rows="4"></textarea><button class="btn" onclick="nextQ()">Weiter</button>';
     } else {
-        let h='<h3>'+qs[qi][0]+'</h3>';
-        qs[qi][1].forEach(v=>h+='<div class=row><label><input type=radio name=r value="'+v+'"> '+v+'</label></div>');
+        let h='<h3>'+d[0]+'</h3>';
+        d[1].forEach(v=>h+='<div class=row><label><input type=radio name=r value="'+v+'"> '+v+'</label></div>');
         h+='<button class="btn" onclick="nextQ()">Weiter</button>';
         q.innerHTML=h;
     }
@@ -80,10 +80,8 @@ function toggleOther(){
 
 // --- Funktion zur Erstellung der ICS-Datei ---
 function createIcsContent(dateStr, timeStr, activity, description) {
-    // Lokale Zeitzone ermitteln (z.B. 'Europe/Berlin' oder 'America/New_York')
-    // Dies ist eine Annahme, die auf dem deutschen Sprachgebrauch basiert.
+    // Wir verwenden eine gängige deutsche Zeitzone.
     // Für eine universelle Lösung müsste man die Zeitzone des Benutzers ermitteln, was clientseitig schwierig ist.
-    // Wir verwenden hier eine gängige deutsche Zeitzone.
     const userTz = 'Europe/Berlin'; // Oder 'CET' / 'CEST' je nach Jahreszeit, aber TZID ist besser
 
     // Datum und Zeit für ICS formatieren (YYYYMMDDTHHMMSS)
@@ -104,9 +102,10 @@ function createIcsContent(dateStr, timeStr, activity, description) {
     const dtstamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0];
 
     // Beschreibung für ICS escapen
-    let icsDescription = description.replace(/\n/g, '\\n').replace(/'/g, "\\'").replace(/,/g, '\\,');
+    // Wichtig: Kommas und Backslashes müssen korrekt escaped werden.
+    let icsDescription = description.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/'/g, "\\'");
 
-    // ICS-Inhalt erstellen
+    // ICS-Inhalt erstellen - Vereinfachte VTIMEZONE
     let ics = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Grasp.info//NadineDatePlanner//DE
@@ -217,9 +216,9 @@ function finish(){
                     transfer.innerHTML += `<br><br><a class="btn" href="${waLink}" target="_blank">📲 Antworten & Date an Florian senden</a>`;
 
                     // Kalender Button wird direkt darunter eingefügt
-                    // Wir verwenden hier einen Link statt eines Buttons, da dies auf iOS oft besser funktioniert,
-                    // um die Datei direkt zu öffnen.
-                    transfer.innerHTML += `<br><a href="data:text/calendar;charset=utf-8,${encodeURIComponent(icsContent)}" download="DateMitFlorian.ics" class="cal">📅 Als Kalenderereignis hinzufügen</a>`;
+                    // Wir verwenden hier die downloadFile Funktion, um die ICS-Datei explizit herunterzuladen.
+                    // Der onclick-Handler ruft createIcsContent auf und übergibt das Ergebnis an downloadFile.
+                    transfer.innerHTML += `<button class="cal" onclick="downloadFile('DateMitFlorian.ics', createIcsContent('${d}', '${tm}', '${activity}', '${msg.replace(/'/g, "\\'")}'))">📅 Als Kalenderereignis hinzufügen</button>`;
 
                     // Hinweis für den Kalender-Button
                     transfer.innerHTML += `<p style="font-size: 0.9em; color: #555;">(Damit du es nicht vergisst! 😉)</p>`;
