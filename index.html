@@ -80,27 +80,17 @@ function toggleOther(){
 
 // --- Funktion zur Erstellung der ICS-Datei ---
 function createIcsContent(dateStr, timeStr, activity, description) {
-    // Datum und Zeit für ICS formatieren (YYYYMMDDTHHMMSS)
-    // Wir nehmen an, dass die Eingabe im lokalen Format ist und fügen keine Zeitzone hinzu,
-    // damit der Kalender die lokale Zeit des Benutzers verwendet.
     const dateTimeStr = dateStr.replace(/-/g, '') + 'T' + timeStr.replace(/:/g, '');
-
-    // Eine ungefähre Endzeit festlegen (z.B. 1 Stunde Dauer)
-    // Für eine genauere Dauer müsste man die Aktivität analysieren oder eine Dauer eingeben lassen.
-    const durationHours = 1;
+    const durationHours = 1; // Standarddauer von 1 Stunde
     const [hours, minutes] = timeStr.split(':').map(Number);
     const endHours = (hours + durationHours) % 24;
     const endMinutes = minutes;
     const endTimeStr = String(endHours).padStart(2, '0') + String(endMinutes).padStart(2, '0');
-    const endDateStr = dateStr.replace(/-/g, ''); // Datum bleibt gleich, nur Zeit ändert sich
+    const endDateStr = dateStr.replace(/-/g, '');
 
-    // Eindeutige ID für das Event (kann eine Kombination aus Zeitstempel und Zufall sein)
     const uid = 'event-' + Date.now() + Math.random().toString(36).substring(2, 15);
+    const dtstamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0];
 
-    // Aktueller Zeitstempel für DTSTAMP
-    const dtstamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0]; // YYYYMMDDTHHMMSS
-
-    // ICS-Inhalt erstellen
     let ics = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Grasp.info//NadineDatePlanner//DE
@@ -110,7 +100,7 @@ DTSTAMP:${dtstamp}
 DTSTART:${dateTimeStr}
 DTEND:${endDateStr}T${endTimeStr}
 SUMMARY:${activity}
-DESCRIPTION:${description.replace(/\n/g, '\\n')}
+DESCRIPTION:${description.replace(/\n/g, '\\n').replace(/'/g, "\\'")}
 END:VEVENT
 END:VCALENDAR`;
 
@@ -158,12 +148,19 @@ function finish(){
 
     let resultHtml = `<h2>✅ DATE BESTÄTIGT ❤️</h2>`;
 
-    // Link zum Senden der WhatsApp-Nachricht
+    // WhatsApp Link (jetzt der einzige und prominente Button)
     const waLink = `https://api.whatsapp.com/send?phone=4915758309186&text=${encodeURIComponent(msg)}`;
-    resultHtml += `<a class="wa" href="${waLink}" target="_blank">📲 Antworten & Date an Florian senden</a>`;
+    // Der rote Button (ursprünglich "Antworten & Date an Florian senden") wird hier als Hauptaktion platziert.
+    resultHtml += `<a class="btn" href="${waLink}" target="_blank">📲 Antworten & Date an Florian senden</a>`; // Roter Button, wie gewünscht
 
-    // Link zum Herunterladen der ICS-Datei
-    resultHtml += `<button class="cal" onclick="downloadFile('DateMitFlorian.ics', createIcsContent('${d}', '${tm}', '${activity}', '${msg.replace(/'/g, "\\'")}'))">📅 Als Kalenderereignis hinzufügen</button>`; // Button, der die Download-Funktion auslöst
+    // Kalender-Button darunter
+    // Der onclick-Handler wird direkt hier aufgerufen, um die ICS-Datei zu generieren und herunterzuladen.
+    // Wir escapen die Anführungszeichen in der Nachricht, damit sie korrekt im String landen.
+    resultHtml += `<button class="cal" onclick="downloadFile('DateMitFlorian.ics', createIcsContent('${d}', '${tm}', '${activity}', '${msg.replace(/'/g, "\\'")}'))">📅 Als Kalenderereignis hinzufügen</button>`;
+
+    // Hinweis für den Kalender-Button
+    resultHtml += `<p style="font-size: 0.9em; color: #555;">(Damit du es nicht vergisst! 😉)</p>`;
+
 
     resultHtml += `<div class="left">
         <h3>💌 Kleine Nachricht</h3>
@@ -193,7 +190,8 @@ function finish(){
                 transfer.textContent = transferText.slice(0, ++j);
                 if (j >= transferText.length) {
                     clearInterval(transferWriter);
-                    // Der Link zum Senden der WhatsApp-Nachricht wird hier erneut eingefügt
+                    // Der Link zum Senden der WhatsApp-Nachricht wird hier erneut eingefügt,
+                    // um die Simulation der Übertragung abzuschließen.
                     transfer.innerHTML += `<br><br><a class="btn" href="${waLink}" target="_blank">📲 Antworten & Date an Florian senden</a>`;
                 }
             }, 15);
