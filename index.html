@@ -1,95 +1,50 @@
 <!DOCTYPE html><html lang='de'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Nadine V8</title><style>
 html,body{margin:0;overflow-x:hidden;font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; background:linear-gradient(135deg,#ff5f8a,#ff7eb3,#ffc2d1); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;}
 .card{max-width:650px;margin:20px auto;background:#fff;border-radius:25px;padding:25px;box-sizing:border-box; box-shadow: 0 4px 15px rgba(0,0,0,0.1);}
-.center{text-align:center}.left{text-align:left}.hidden{display:none}.btn{background:#ff2f6d;color:#fff;border:none;padding:12px 18px;border-radius:12px;cursor:pointer;transition:background-color 0.3s ease, transform 0.2s ease; font-weight:bold}.btn:hover{background:#e02b5a}.btn:active{transform:scale(0.98)}.btnGray{background:#ddd;color:#333}.field{width:100%;padding:12px;margin-top:10px;box-sizing:border-box;border:1px solid #ddd;border-radius:12px;font-size:16px}.row{margin:12px 0}.wa{display:block;margin:20px auto;width:90%;max-width:420px;padding:14px;border-radius:12px;background:#25D366;color:white;text-align:center;text-decoration:none;font-weight:bold;transition:background-color 0.3s ease, transform 0.2s ease}.wa:hover{background:#128C7E}.wa:active{transform:scale(0.98)}.cal{display:block;width:100%;margin-top:10px;padding:14px;border:none;border-radius:12px;background:#4285f4;color:white;font-size:16px;cursor:pointer;transition:background-color 0.3s ease, transform 0.2s ease}.cal:hover{background:#357a3c}.cal:active{transform:scale(0.98)}.cal-download-btn{background:#ff2f6d;color:#fff;border:none;padding:10px 15px;border-radius:10px;cursor:pointer;font-size:14px;margin-top:15px;display:inline-block;text-decoration:none;transition:background-color 0.3s ease, transform 0.2s ease}.cal-download-btn:hover{background:#e02b5a}.cal-download-btn:active{transform:scale(0.98)}#txt,#cert,#transfer{white-space:pre-wrap;word-break:break-word}.centered-text{text-align:center}.left-aligned-in-center{text-align:left;margin-left:auto;margin-right:auto;max-width:90%;}.cert-text{text-align:center;}.progress-bar-container{width:100%;background-color:#eee;border-radius:12px;margin-top:15px;height:20px;overflow:hidden}.progress-bar{height:100%;background-color:#ff2f6d;border-radius:12px;transition:width 0.5s ease-out}.emoji-hover:hover{transform:scale(1.2);transition:transform 0.3s ease}.fade-in{-webkit-animation:fadeIn 0.5s ease forwards;-moz-animation:fadeIn 0.5s ease forwards;animation:fadeIn 0.5s ease forwards;opacity:0;transform:translateY(20px)}.fade-in.visible{-webkit-animation-fill-mode:forwards;-moz-animation-fill-mode:forwards;animation-fill-mode:forwards;opacity:1;transform:translateY(0)}.fade-out{-webkit-animation:fadeOut 0.5s ease forwards;-moz-animation:fadeOut 0.5s ease forwards;animation:fadeOut 0.5s ease forwards;opacity:1;transform:translateY(0)}.fade-out.hidden{-webkit-animation-fill-mode:forwards;-moz-animation-fill-mode:forwards;animation-fill-mode:forwards;opacity:0;transform:translateY(-20px)}@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}@keyframes fadeOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-20px)}}
-.centered-input-group { /* Neue Klasse für Zentrierung */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 10px; /* Abstand wie bei .field */
-}
-.centered-input-group .field {
-    text-align: center; /* Zentriert den Text innerhalb des Feldes */
-    max-width: 300px; /* Begrenzt die Breite, damit es gut zentriert aussieht */
-}
-.centered-input-group label { /* Für Platzhaltertext */
-    display: block;
-    margin-bottom: 5px;
-    color: #555;
-    font-size: 14px;
-}
-.centered-select-group { /* Neue Klasse für Zentrierung von Select-Elementen */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 10px;
-}
-.centered-select-group .field {
-    text-align: center;
-    max-width: 300px;
-}
-</style></head><body><div class='card'>
-<div id='intro' class='center'><h1>❤️ Nadine ❤️</h1><p id="intro-text"></p><button id="introNextBtn" class='btn hidden' onclick="show('intro','question')">Weiter ❤️</button></div>
+.center{text-align:center}.left{text-align:left}.hidden{display:none}.btn{background:#ff2f6d;color:#fff;border:none;padding:12px 18px;border-radius:12px;cursor:pointer;transition:background-color 0.3s ease, transform 0.2s ease; font-weight:bold}.btn:hover{background:#e02b5a}.btn:active{transform:scale(0.98)}.btnGray{background:#ddd;color:#333}.field{width:100%;padding:12px;margin-top:10px;box-sizing:border-box;border:1px solid #ddd;border-radius:12px;font-size:16px}.row{margin:12px 0}.wa{display:block;margin:20px auto;width:90%;max-width:420px;padding:14px;border-radius:12px;background:#25D366;color:white;text-align:center;text-decoration:none;font-weight:bold;transition:background-color 0.3s ease, transform 0.2s ease}.wa:hover{background:#128C7E}.wa:active{transform:scale(0.98)}.cal{display:block;width:100%;margin-top:10px;padding:14px;border:none;border-radius:12px;background:#4285f4;color:white;font-size:16px;cursor:pointer;transition:background-color 0.3s ease, transform 0.2s ease}.cal:hover{background:#357a3c}.cal:active{transform:scale(0.98)}.cal-download-btn{background:#ff2f6d;color:#fff;border:none;padding:10px 15px;border-radius:10px;cursor:pointer;font-size:14px;margin-top:15px;display:inline-block;text-decoration:none;transition:background-color 0.3s ease, transform 0.2s ease}.cal-download-btn:hover{background:#e02b5a}.cal-download-btn:active{transform:scale(0.98)}#txt,#cert,#transfer{white-space:pre-wrap;word-break:break-word}.centered-text{text-align:center}.left-aligned-in-center{text-align:left;margin-left:auto;margin-right:auto;max-width:90%;}.cert-text{text-align:center;}.progress-bar-container{width:100%;background-color:#eee;border-radius:12px;margin-top:15px;height:20px;overflow:hidden}.progress-bar{height:100%;background-color:#ff2f6d;border-radius:12px;transition:width 0.5s ease-out}.emoji-hover:hover{transform:scale(1.2);transition:transform 0.3s ease}.fade-in{-webkit-animation:fadeIn 0.5s ease forwards;-moz-animation:fadeIn 0.5s ease forwards;animation:fadeIn 0.5s ease forwards;opacity:0;transform:translateY(20px)}.fade-in.visible{-webkit-animation-fill-mode:forwards;-moz-animation-fill-mode:forwards;animation-fill-mode:forwards;opacity:1;transform:translateY(0)}.fade-out{-webkit-animation:fadeOut 0.5s ease forwards;-moz-animation:fadeOut 0.5s ease forwards;animation:fadeOut 0.5s ease forwards;opacity:1;transform:translateY(0)}.fade-out.hidden{-webkit-animation-fill-mode:forwards;-moz-animation-fill-mode:forwards;animation-fill-mode:forwards;opacity:0;transform:translateY(-20px)}@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}@keyframes fadeOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-20px)}}</style></head><body><div class='card'>
+<div id='intro' class='center'><h1>❤️ Nadine ❤️</h1><p>Hi Nadine 😊</p><p>Ich möchte dich etwas fragen ❤️</p><p><b>Fun Fact:</b><br>Florian hat diese Webseite wahrscheinlich öfter getestet als nötig 😇❤️</p><button class='btn' onclick="show('intro','question')">Weiter ❤️</button></div>
 <div id='question' class='center hidden'><h2>Möchtest du mit mir unser nächstes Date planen? 🥺</h2><button class='btn' onclick='showAnalysis()'>Ja 😍</button> <button id='noBtn' class='btn btnGray'>Nein 🙈</button></div>
 <div id='analysis' class='hidden left'><div id='txt'></div><br><button id='analysisBtn' class='btn hidden' onclick="show('analysis','stats')">Weiter ❤️</button></div>
-<div id='stats' class='hidden center'><h2>❤️ Statistik</h2><p id="stats-text"></p><button id="statsNextBtn" class='btn hidden' onclick="show('stats','questionsIntro')">Weiter ❤️</button></div>
-<div id='questionsIntro' class='center hidden'><h2>Aber bevor wir weitermachen...</h2><p id="questionsIntro-text"></p><button id="questionsIntroNextBtn" class='btn hidden' onclick='startQuestions()'>Weiter ❤️</button></div>
+<div id='stats' class='hidden center'><h2>❤️ Statistik</h2><p>🍦 Eis ✅<br>🎱 Billard ✅<br>🥾 Wandern ✅<br>🌳 Spaziergang ✅<br>🍿 Kino ✅</p><p>Fehlgeschlagene Treffen: 0<br><br><b>Erfolgsquote: 100 %</b><br>Weitere Treffen dringend empfohlen ❤️</p><button class='btn' onclick="show('stats','questionsIntro')">Weiter ❤️</button></div>
+<div id='questionsIntro' class='center hidden'><h2>Aber bevor wir weitermachen...</h2><p>hier ein paar Fragen 😊</p><button class='btn' onclick='startQuestions()'>Weiter ❤️</button></div>
 <div id='questions' class='hidden left'><div id='progress'></div><div id='q'></div></div>
-<div id='plan' class='hidden center'>
-    <h2>Date planen ❤️</h2>
-    <div class="centered-input-group">
-        <label for="date">Datum</label>
-        <input class='field' id='date' type='date'>
-    </div>
-    <div class="centered-input-group">
-        <label for="time">Uhrzeit</label>
-        <input class='field' id='time' type='time'>
-    </div>
-    <div class="centered-select-group">
-        <select class='field' id='act' onchange='toggleOtherActivityField()'> <!-- Aktivitätsauswahl -->
-            <option>🍦 Eis essen</option>
-            <option>🍿 Kino</option>
-            <option>🍝 Essen gehen</option>
-            <option>🌳 Spaziergang</option>
-            <option>🥾 Wandern</option>
-            <option>🎯 Dart bei dir</option>
-            <option>🏊 Baden</option>
-            <option>🎉 Gemeinsam Feiern</option>
-            <option>✏️ Etwas anderes ...</option>
-        </select>
-    </div>
-    <div class="centered-select-group">
-        <select class='field' id='duration'> <!-- Dauer-Auswahl -->
-            <option value='1'>ca. 1 Stunde</option>
-            <option value='2'>ca. 2 Stunden</option>
-            <option value='3'>ca. 3 Stunden</option>
-            <option value='4'>ca. 4 Stunden</option>
-            <option value='6'>ca. 6 Stunden</option> <!-- Hinzugefügt -->
-            <option value='8'>ca. 8 Stunden</option> <!-- Hinzugefügt -->
-            <option value='99'>Open End</option>
-        </select>
-    </div>
-    <input class='field hidden' id='otherActivity' placeholder='Was hast du im Kopf? ❤️'>
-    <button class='btn' onclick='finish()'>Date bestätigen ❤️</button>
-</div>
+<div id='plan' class='hidden center'><h2>Date planen ❤️</h2><input class='field' id='date' type='date'><input class='field' id='time' type='time'>
+<select class='field' id='act' onchange='toggleOtherActivityField()'> <!-- Aktivitätsauswahl -->
+    <option>🍦 Eis essen</option>
+    <option>🍿 Kino</option>
+    <option>🍝 Essen gehen</option>
+    <option>🌳 Spaziergang</option>
+    <option>🥾 Wandern</option>
+    <option>🎯 Dart bei dir</option>
+    <option>🏊 Baden</option>
+    <option>🎉 Gemeinsam Feiern</option>
+    <option>✏️ Etwas anderes ...</option>
+</select>
+<select class='field' id='duration'> <!-- Dauer-Auswahl -->
+    <option value='1'>ca. 1 Stunde</option>
+    <option value='2'>ca. 2 Stunden</option>
+    <option value='3'>ca. 3 Stunden</option>
+    <option value='4'>ca. 4 Stunden</option>
+    <option value='99'>Open End</option>
+</select>
+<input class='field hidden' id='otherActivity' placeholder='Was hast du im Kopf? ❤️'><button class='btn' onclick='finish()'>Date bestätigen ❤️</button></div>
 <div id='result' class='hidden center'><div id='out'></div></div></div>
 <script>
 let answers=[];
 // ✅ KALENDERDATEN GLOBAL SPEICHERN
 let calendarData = null;
 
-// --- Funktion für Schreibmaschinen-Effekt ---
+// --- Funktion für Schreibmaschinen-Effekt (für Analyse) ---
 function animateText(elementId, text, delay = 15, callback) {
     const element = document.getElementById(elementId);
     if (!element) {
         if (callback) callback();
         return;
     }
-    element.innerHTML = ''; // Sicherstellen, dass das Element leer ist
+    element.textContent = ''; // Sicherstellen, dass das Element leer ist
     let i = 0;
     const interval = setInterval(() => {
-        // Verwende innerHTML, um HTML-Tags korrekt zu rendern
-        element.innerHTML += text.charAt(i);
+        element.textContent += text.charAt(i);
         i++;
         if (i >= text.length) {
             clearInterval(interval);
@@ -107,11 +62,11 @@ function show(a,b){
     elementA.classList.add('fade-out');
     elementA.classList.remove('visible');
 
-    // Warte auf das Ende der Animation, bevor das nächste Element angezeigt wird
-    elementA.addEventListener('animationend', function handler() { // <-- Ersetzt transitionend durch animationend
+    // Warte auf das Ende der Transition, bevor das nächste Element angezeigt wird
+    elementA.addEventListener('transitionend', function handler() {
         elementA.classList.add('hidden');
         elementA.classList.remove('fade-out');
-        elementA.removeEventListener('animationend', handler); // Event-Listener entfernen
+        elementA.removeEventListener('transitionend', handler); // Event-Listener entfernen
 
         // Nächstes Element anzeigen und sichtbar machen (Fade-In)
         elementB.classList.remove('hidden');
@@ -122,105 +77,27 @@ function show(a,b){
     }, { once: true });
 }
 
-// --- Texte für die einzelnen Abschnitte ---
-const introTexts = [
-    "Hi Nadine 😊",
-    "Ich möchte dich etwas fragen ❤️",
-    "<b>Fun Fact:</b><br>Florian hat diese Webseite wahrscheinlich öfter getestet als nötig 😇❤️"
-];
-const analysisTexts = [
-    'Nadine-Kompatibilität wird berechnet... ❤️\n\n✅ Sehr sympathisch 😊\n\n✅ Hat ein wunderschönes Lächeln ❤️\n\n✅ Hat bereits Wanderungen und Spaziergänge erfolgreich überstanden 🥾🌳\n\n✅ Hat bei Eis, Billard und Kino einen ausgezeichneten Eindruck hinterlassen 🍦🎱🍿\n\nErgebnis:\n\nNächstes Date dringend empfohlen ❤️'
-];
-const statsTexts = [
-    "🍦 Eis ✅<br>🎱 Billard ✅<br>🥾 Wandern ✅<br>🌳 Spaziergang ✅<br>🍿 Kino ✅",
-    "Fehlgeschlagene Treffen: 0<br><br><b>Erfolgsquote: 100 %</b><br>Weitere Treffen dringend empfohlen ❤️"
-];
-const questionsIntroTexts = [
-    "Aber bevor wir weitermachen...",
-    "hier ein paar Fragen 😊"
-];
-
-function showIntroAnimation() {
-    const introTextElement = document.getElementById('intro-text');
-    const introNextBtn = document.getElementById('introNextBtn');
-    introNextBtn.classList.add('hidden'); // Button verstecken
-
-    let textIndex = 0;
-    function animateNextIntroLine() {
-        if (textIndex < introTexts.length) {
-            animateText('intro-text', introTexts[textIndex], 15, () => {
-                textIndex++;
-                animateNextIntroLine(); // Nächste Zeile animieren
-            });
-        } else {
-            // Alle Zeilen animiert, Button anzeigen
-            introNextBtn.classList.remove('hidden');
-            introNextBtn.classList.add('visible');
-        }
-    }
-    animateNextIntroLine();
-}
-
 function showAnalysis(){
     show('question','analysis');
+    // --- NEUER TEXT FÜR DIE ANALYSE ---
+    let t='Nadine-Kompatibilität wird berechnet... ❤️';
+    let i=0;
+    const txtElement = document.getElementById('txt');
     const analysisBtn = document.getElementById('analysisBtn');
     analysisBtn.classList.add('hidden'); // Sicherstellen, dass der Button versteckt ist
 
-    animateText('txt', analysisTexts[0], 15, () => {
-        // Callback: Wird aufgerufen, wenn die Animation für 'txt' fertig ist
-        analysisBtn.classList.remove('hidden');
-        analysisBtn.classList.add('visible'); // Macht den Button sichtbar
-    });
-}
-
-function showStatsAnimation() {
-    const statsTextElement = document.getElementById('stats-text');
-    const statsNextBtn = document.getElementById('statsNextBtn');
-    statsNextBtn.classList.add('hidden'); // Button verstecken
-
-    let textIndex = 0;
-    function animateNextStatsLine() {
-        if (textIndex < statsTexts.length) {
-            animateText('stats-text', statsTexts[textIndex], 15, () => {
-                textIndex++;
-                animateNextStatsLine(); // Nächste Zeile animieren
-            });
-        } else {
-            // Alle Zeilen animiert, Button anzeigen
-            statsNextBtn.classList.remove('hidden');
-            statsNextBtn.classList.add('visible');
+    const interval = setInterval(()=>{
+        txtElement.textContent=t.slice(0,++i);
+        if(i>=t.length){
+            clearInterval(interval);
+            // Hier wird der Button sichtbar, NACHDEM der Text fertig geschrieben ist
+            analysisBtn.classList.remove('hidden');
+            analysisBtn.classList.add('visible');
         }
-    }
-    animateNextStatsLine();
+    },15);
 }
 
-function showQuestionsIntroAnimation() {
-    const questionsIntroTextElement = document.getElementById('questionsIntro-text');
-    const questionsIntroNextBtn = document.getElementById('questionsIntroNextBtn');
-    questionsIntroNextBtn.classList.add('hidden'); // Button verstecken
-
-    let textIndex = 0;
-    function animateNextIntroLine() {
-        if (textIndex < questionsIntroTexts.length) {
-            animateText('questionsIntro-text', questionsIntroTexts[textIndex], 15, () => {
-                textIndex++;
-                animateNextIntroLine(); // Nächste Zeile animieren
-            });
-        } else {
-            // Alle Zeilen animiert, Button anzeigen
-            questionsIntroNextBtn.classList.remove('hidden');
-            questionsIntroNextBtn.classList.add('visible');
-        }
-    }
-    animateNextIntroLine();
-}
-
-
-function startQuestions(){
-    show('questionsIntro','questions');
-    showQuestionsIntroAnimation(); // <-- showQuestionsIntroAnimation wird hier aufgerufen
-    renderQ();
-}
+function startQuestions(){show('questionsIntro','questions');renderQ()}
 
 const qs=[
     ['🏆 Welches Date war bisher dein Favorit?',['Eis essen 🍦','Billard 🎱','Wandern 🥾','Spaziergang 🌳','Kino 🍿']],
@@ -236,6 +113,7 @@ function renderQ(){
     const questionElement = document.getElementById('q');
 
     // --- Klassen zurücksetzen, um Animationen korrekt auszuführen ---
+    // Dies ist die von Ihnen empfohlene Korrektur, um sicherzustellen, dass die Animationen bei jedem Wechsel korrekt funktionieren.
     questionElement.classList.remove('fade-in', 'fade-out', 'visible');
     questionElement.innerHTML = ''; // Vorherigen Inhalt leeren
 
@@ -293,17 +171,17 @@ function nextQ(){
     questionElement.classList.add('fade-out');
 
     if(qi<qs.length) {
-        // Warte auf das Ende der Animation, bevor die nächste Frage geladen wird
-        questionElement.addEventListener('animationend', function handler() { // <-- Ersetzt transitionend durch animationend
+        // Warte auf das Ende der Transition, bevor die nächste Frage geladen wird
+        questionElement.addEventListener('transitionend', function handler() {
             renderQ();
-            questionElement.removeEventListener('animationend', handler);
+            questionElement.removeEventListener('transitionend', handler);
         }, { once: true });
     }
     else {
-        // Warte auf das Ende der Animation, bevor zum Planungsbereich gewechlt wird
-        questionElement.addEventListener('animationend', function handler() { // <-- Ersetzt transitionend durch animationend
+        // Warte auf das Ende der Transition, bevor zum Planungsbereich gewechselt wird
+        questionElement.addEventListener('transitionend', function handler() {
             show('questions','plan');
-            questionElement.removeEventListener('animationend', handler);
+            questionElement.removeEventListener('transitionend', handler);
         }, { once: true });
     }
 }
@@ -538,10 +416,4 @@ Damit du unser Date nicht vergisst 🥰
         }, 15);
     }
 }
-
-// --- Initialisierung beim Laden der Seite ---
-document.addEventListener('DOMContentLoaded', () => {
-    showIntroAnimation(); // Starte die Animation für den Intro-Text
-    // Die anderen Animationen werden durch Klicks auf Buttons ausgelöst
-});
 </script></body></html>
