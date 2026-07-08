@@ -82,6 +82,7 @@ function toggleOther(){
 function createIcsContent(dateStr, timeStr, activity, description) {
     // Wir verwenden eine gängige deutsche Zeitzone.
     // Für eine universelle Lösung müsste man die Zeitzone des Benutzers ermitteln, was clientseitig schwierig ist.
+    // Wir verwenden hier eine gängige deutsche Zeitzone.
     const userTz = 'Europe/Berlin'; // Oder 'CET' / 'CEST' je nach Jahreszeit, aber TZID ist besser
 
     // Datum und Zeit für ICS formatieren (YYYYMMDDTHHMMSS)
@@ -102,29 +103,16 @@ function createIcsContent(dateStr, timeStr, activity, description) {
     const dtstamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0];
 
     // Beschreibung für ICS escapen
-    // Wichtig: Kommas und Backslashes müssen korrekt escaped werden.
+    // Wichtig: Kommas, Backslashes und Zeilenumbrüche müssen korrekt escaped werden.
     let icsDescription = description.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/'/g, "\\'");
 
     // ICS-Inhalt erstellen - Vereinfachte VTIMEZONE
+    // Wir lassen die detaillierte VTIMEZONE-Definition weg und verlassen uns nur auf TZID.
+    // Dies ist oft kompatibler.
     let ics = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Grasp.info//NadineDatePlanner//DE
 CALSCALE:GREGORIAN
-BEGIN:VTIMEZONE
-TZID:${userTz}
-BEGIN:STANDARD
-DTSTART:19700101T000000
-TZOFFSETFROM:+0100
-TZOFFSETTO:+0100
-TZNAME:CET
-END:STANDARD
-BEGIN:DAYLIGHT
-DTSTART:19700101T000000
-TZOFFSETFROM:+0200
-TZOFFSETTO:+0200
-TZNAME:CEST
-END:DAYLIGHT
-END:VTIMEZONE
 BEGIN:VEVENT
 UID:${uid}
 DTSTAMP:${dtstamp}
@@ -140,15 +128,28 @@ END:VCALENDAR`;
 
 // --- Funktion zum Herunterladen einer Datei ---
 function downloadFile(filename, content, mimeType = 'text/plain') {
-    const blob = new Blob([content], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    console.log("downloadFile called with:", filename, mimeType); // Debugging
+    try {
+        const blob = new Blob([content], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        // a.style.display = 'none'; // Verstecken, falls es kurz sichtbar ist
+        document.body.appendChild(a);
+        console.log("Attempting to click download link..."); // Debugging
+        a.click();
+        console.log("Download link clicked."); // Debugging
+        // Cleanup after a short delay to allow the click to register
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            console.log("Cleanup done."); // Debugging
+        }, 100); // Kurze Verzögerung
+    } catch (e) {
+        console.error("Error in downloadFile:", e); // Debugging
+        alert("Fehler beim Erstellen des Downloads. Bitte versuchen Sie es erneut.");
+    }
 }
 
 function finish(){
@@ -218,6 +219,7 @@ function finish(){
                     // Kalender Button wird direkt darunter eingefügt
                     // Wir verwenden hier die downloadFile Funktion, um die ICS-Datei explizit herunterzuladen.
                     // Der onclick-Handler ruft createIcsContent auf und übergibt das Ergebnis an downloadFile.
+                    // Wir müssen die Anführungszeichen in der Nachricht escapen, damit sie korrekt im String landen.
                     transfer.innerHTML += `<button class="cal" onclick="downloadFile('DateMitFlorian.ics', createIcsContent('${d}', '${tm}', '${activity}', '${msg.replace(/'/g, "\\'")}'))">📅 Als Kalenderereignis hinzufügen</button>`;
 
                     // Hinweis für den Kalender-Button
