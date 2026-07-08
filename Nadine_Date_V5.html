@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Für Nadine ❤️</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:linear-gradient(135deg,#ff5f8a,#ff7eb3,#ffc2d1);display:flex;justify-content:center;align-items:center;padding:20px;overflow:hidden}
+.card{width:100%;max-width:560px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-radius:30px;padding:30px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.15);z-index:2}
+.hidden{display:none}h1{color:#ff2f6d}button{border:none;border-radius:15px;padding:14px 22px;font-size:16px;cursor:pointer;margin:5px}.primary{background:#ff2f6d;color:#fff}.secondary{background:#ececec}input,select{width:100%;padding:12px;margin-top:10px;border-radius:12px;border:1px solid #ddd}.linkbtn{display:block;text-decoration:none;color:#fff;font-weight:bold;padding:14px;border-radius:12px;margin-top:12px}.calendar{background:#4285F4}.whatsapp{background:#25D366}.cert{margin-top:20px;border-top:1px solid #ddd;padding-top:20px;color:#666}.heart{position:fixed;opacity:.2;pointer-events:none;animation:float linear infinite;z-index:1}@keyframes float{from{transform:translateY(100vh)}to{transform:translateY(-120px)}}
+</style>
+</head>
+<body>
+<div class="card">
+<div id="welcome">
+<h1>❤️ Nadine ❤️</h1>
+<p>Hi 😊</p>
+<p>Ich habe lange überlegt...<br>und möchte dich etwas fragen ❤️</p>
+<button class="primary" onclick="showQuestion()">Weiter ❤️</button>
+</div>
+<div id="question" class="hidden">
+<h2>Möchtest du mit mir<br>unser nächstes Date planen? 🥺</h2>
+<button class="primary" onclick="showForm()">Ja 😍</button>
+<button id="noBtn" class="secondary" onclick="changeNoButton()">Nein 🙈</button>
+</div>
+<div id="analysis" class="hidden">
+<h2>🖥️ Systemanalyse</h2>
+<div id="analysisText" style="text-align:left;white-space:pre-line;line-height:1.8"></div>
+</div>
+<div id="form" class="hidden">
+<h2>🥰 Das freut mich!</h2>
+<input type="date" id="date">
+<input type="time" id="time">
+<select id="activity" onchange="toggleCustom()">
+<option>Eis essen 🍦</option><option>Kino 🍿</option><option>Essen gehen 🍝</option><option>Spaziergang 🌳</option><option>Dart bei dir 🎯</option><option>Baden 🏊</option><option>Gemeinsam Feiern 🎉</option><option value="custom">✏️ Eigene Idee</option>
+</select>
+<input id="customActivity" class="hidden" type="text" placeholder="Was hast du im Kopf? ❤️">
+<button class="primary" onclick="confirmDate()">Date bestätigen ❤️</button>
+</div>
+<div id="result" class="hidden"><h2>✅ DATE BESTÄTIGT ❤️</h2><div id="output"></div></div>
+</div>
+<script>
+const noTexts=["Nein 🙈","Sicher? 🥺","Wirklich? 😢","Ganz sicher? 😭","Die Statistik empfiehlt Ja 📊","Florian wäre traurig 💔","Vielleicht doch Ja? 😇"];let noIndex=0;
+function showQuestion(){welcome.classList.add('hidden');question.classList.remove('hidden');}
+function showForm(){question.classList.add('hidden');analysis.classList.remove('hidden');const text=`Systemanalyse läuft...\n\n✅ Sehr sympathisch 😊\n\n✅ Hat ein wunderschönes Lächeln ❤️\n\n✅ Hat bereits Wanderungen und Spaziergänge erfolgreich überstanden 🥾🌳\n\n✅ Hat bei Eis, Billard und Kino einen ausgezeichneten Eindruck hinterlassen 🍦🎱🍿\n\nErgebnis:\n\nNächstes Date dringend empfohlen ❤️`;typeWriter(text,document.getElementById('analysisText'),25);}
+function typeWriter(text,el,speed){el.innerHTML='';let i=0;function w(){if(i<text.length){el.innerHTML+=text.charAt(i++);setTimeout(w,speed);}else{setTimeout(()=>{analysis.classList.add('hidden');form.classList.remove('hidden');},1500);}}w();}
+function changeNoButton(){noIndex++;if(noIndex<noTexts.length){noBtn.innerText=noTexts[noIndex];}else{noBtn.style.display='none';}}
+function toggleCustom(){if(activity.value==='custom'){customActivity.classList.remove('hidden')}else{customActivity.classList.add('hidden')}}
+function confirmDate(){let act=activity.value;if(act==='custom'){act=customActivity.value.trim();if(!act){alert('Bitte eine Idee eingeben ❤️');return;}}if(!date.value||!time.value){alert('Bitte Datum und Uhrzeit auswählen ❤️');return;}const start=new Date(date.value+'T'+time.value);const end=new Date(start.getTime()+7200000);const fmt=d=>d.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';const ics=`BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:Date mit Florian ❤️\nDESCRIPTION:${act}\nDTSTART:${fmt(start)}\nDTEND:${fmt(end)}\nEND:VEVENT\nEND:VCALENDAR`;const url=URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));const wt=`Hey Florian ❤️\n\nIch habe JA gesagt! 🥰\n\n📅 ${date.value}\n⏰ ${time.value}\n✨ ${act}`;const wurl='https://api.whatsapp.com/send?phone=4915758309186&text='+encodeURIComponent(wt);form.classList.add('hidden');result.classList.remove('hidden');output.innerHTML='👩 Nadine<br>🧑 Florian<br><br>📅 '+date.value+'<br>⏰ '+time.value+'<br>✨ '+act+'<br><br>💌 Ich freue mich ehrlich gesagt jetzt schon auf unser Date ❤️<br><br><i>Fun Fact:<br>Du hast es geschafft, dass ich diese Webseite extra für eine einzige Person gebaut habe 😊❤️</i><a class="linkbtn calendar" href="'+url+'" download="DateMitFlorian.ics">📅 Kalender hinzufügen</a><a class="linkbtn whatsapp" href="'+wurl+'">📲 Antwort per WhatsApp senden</a><div class="cert">DATE-ZERTIFIKAT ❤️<br><br>Nadine ✅<br>Florian ✅<br><br>Status: Date erfolgreich geplant 🥰<br><br>Version 1.0<br>Mit Nervosität und Hoffnung<br>von Florian entwickelt ❤️</div>';}
+for(let i=0;i<25;i++){const h=document.createElement('div');h.className='heart';h.innerHTML='❤️';h.style.left=Math.random()*100+'%';h.style.fontSize=(16+Math.random()*20)+'px';h.style.animationDuration=(5+Math.random()*8)+'s';document.body.appendChild(h);}
+</script>
+</body></html>
