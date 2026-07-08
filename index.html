@@ -17,7 +17,7 @@ html,body{margin:0;overflow-x:hidden;font-family:-apple-system, BlinkMacSystemFo
     <option>🥾 Wandern</option>
     <option>🎯 Dart bei dir</option>
     <option>🏊 Baden</option>
-    <option>🎉 Gemeinsam Feiern</option> <!-- Wieder hinzugefügt -->
+    <option>🎉 Gemeinsam Feiern</option>
     <option>✏️ Etwas anderes ...</option>
 </select>
 <select class='field' id='duration'> <!-- Dauer-Auswahl -->
@@ -35,6 +35,7 @@ let answers=[];
 let calendarData = null;
 
 // --- Sanftere Übergänge für Seitenwechsel ---
+// Diese Funktion wurde vereinfacht, um direkt Klassen zu ändern und Animationen zu nutzen.
 function show(a,b){
     const elementA = document.getElementById(a);
     const elementB = document.getElementById(b);
@@ -43,11 +44,11 @@ function show(a,b){
     elementA.classList.add('fade-out');
     elementA.classList.remove('visible');
 
-    // Warte auf das Ende der Transition, bevor das nächste Element angezeigt wird
-    elementA.addEventListener('transitionend', function handler() {
+    // Warte auf das Ende der Animation, bevor das nächste Element angezeigt wird
+    elementA.addEventListener('animationend', function handler() {
         elementA.classList.add('hidden');
         elementA.classList.remove('fade-out');
-        elementA.removeEventListener('transitionend', handler); // Event-Listener entfernen
+        elementA.removeEventListener('animationend', handler); // Event-Listener entfernen
 
         // Nächstes Element anzeigen und sichtbar machen (Fade-In)
         elementB.classList.remove('hidden');
@@ -140,17 +141,17 @@ function nextQ(){
     questionElement.classList.add('fade-out');
 
     if(qi<qs.length) {
-        // Warte auf das Ende der Transition, bevor die nächste Frage geladen wird
-        questionElement.addEventListener('transitionend', function handler() {
+        // Warte auf das Ende der Animation, bevor die nächste Frage geladen wird
+        questionElement.addEventListener('animationend', function handler() {
             renderQ();
-            questionElement.removeEventListener('transitionend', handler);
+            questionElement.removeEventListener('animationend', handler);
         }, { once: true });
     }
     else {
-        // Warte auf das Ende der Transition, bevor zum Planungsbereich gewechselt wird
-        questionElement.addEventListener('transitionend', function handler() {
+        // Warte auf das Ende der Animation, bevor zum Planungsbereich gewechselt wird
+        questionElement.addEventListener('animationend', function handler() {
             show('questions','plan');
-            questionElement.removeEventListener('transitionend', handler);
+            questionElement.removeEventListener('animationend', handler);
         }, { once: true });
     }
 }
