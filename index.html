@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang='de'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Nadine V8</title><style>html,body{margin:0;overflow-x:hidden;font-family:Arial,sans-serif;background:linear-gradient(135deg,#ff5f8a,#ff7eb3,#ffc2d1)}.card{max-width:650px;margin:20px auto;background:#fff;border-radius:25px;padding:25px;box-sizing:border-box}.center{text-align:center}.left{text-align:left}.hidden{display:none}.btn{background:#ff2f6d;color:#fff;border:none;padding:12px 18px;border-radius:12px;cursor:pointer}.btnGray{background:#ddd;color:#333}.field{width:100%;padding:12px;margin-top:10px;box-sizing:border-box;border:1px solid #ddd;border-radius:12px}.row{margin:12px 0}.wa{display:block;margin:20px auto;width:90%;max-width:420px;padding:14px;border-radius:12px;background:#25D366;color:white;text-align:center;text-decoration:none;font-weight:bold}.cal{display:block;width:100%;margin-top:10px;padding:14px;border:none;border-radius:12px;background:#4285f4;color:white;font-size:16px;cursor:pointer}.cal:hover{background:#357a3c}.cal:active{background:#2d6a33}#txt,#cert,#transfer{white-space:pre-wrap;word-break:break-word}</style></head><body><div class='card'>
+<!DOCTYPE html><html lang='de'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Nadine V8</title><style>html,body{margin:0;overflow-x:hidden;font-family:Arial,sans-serif;background:linear-gradient(135deg,#ff5f8a,#ff7eb3,#ffc2d1)}.card{max-width:650px;margin:20px auto;background:#fff;border-radius:25px;padding:25px;box-sizing:border-box}.center{text-align:center}.left{text-align:left}.hidden{display:none}.btn{background:#ff2f6d;color:#fff;border:none;padding:12px 18px;border-radius:12px;cursor:pointer}.btnGray{background:#ddd;color:#333}.field{width:100%;padding:12px;margin-top:10px;box-sizing:border-box;border:1px solid #ddd;border-radius:12px}.row{margin:12px 0}.wa{display:block;margin:20px auto;width:90%;max-width:420px;padding:14px;border-radius:12px;background:#25D366;color:white;text-align:center;text-decoration:none;font-weight:bold}.cal{display:block;width:100%;margin-top:10px;padding:14px;border:none;border-radius:12px;background:#4285f4;color:white;font-size:16px;cursor:pointer}.cal:hover{background:#357a3c}.cal:active{background:#2d6a33}#txt,#cert,#transfer{white-space:pre-wrap;word-break:break-word}.centered-text{text-align:center}.left-aligned-in-center{text-align:left;margin-left:auto;margin-right:auto;max-width:90%; /* Passt sich der .wa-Breite an */}.cert-text{text-align:center; /* Zentriert den Zertifikatstext */}</style></head><body><div class='card'>
 <div id='intro' class='center'><h1>❤️ Nadine ❤️</h1><p>Hi Nadine 😊</p><p>Ich möchte dich etwas fragen ❤️</p><p><b>Fun Fact:</b><br>Florian hat diese Webseite wahrscheinlich öfter getestet als nötig 😇❤️</p><button class='btn' onclick="show('intro','question')">Weiter ❤️</button></div>
 <div id='question' class='center hidden'><h2>Möchtest du mit mir unser nächstes Date planen? 🥺</h2><button class='btn' onclick='showAnalysis()'>Ja 😍</button> <button id='noBtn' class='btn btnGray'>Nein 🙈</button></div>
 <div id='analysis' class='hidden left'><div id='txt'></div><br><button id='analysisBtn' class='btn hidden' onclick="show('analysis','stats')">Weiter ❤️</button></div>
@@ -233,9 +233,11 @@ function finish(){
 
     show('plan','result');
 
-    let resultHtml = `<h2>✅ DATE BESTÄTIGMENT ❤️</h2>`;
+    let resultHtml = `<h2>✅ DATE BESTÄTIGT ❤️</h2>`;
 
-    resultHtml += `<div class="left">
+    // --- Kleine Nachricht ---
+    // Diese wird nun mit einer Klasse versehen, die sie zentriert.
+    resultHtml += `<div class="left-aligned-in-center">
         <h3>💌 Kleine Nachricht</h3>
         <br>
         Ich freue mich wirklich immer, wenn wir Zeit miteinander verbringen 😊❤️<br><br>
@@ -244,34 +246,43 @@ function finish(){
         (Und ja, das war die Arbeit wert 🥰)
     </div>`;
 
-    // --- DATENÜBERTRAGUNG UND ZERTIFIKAT ---
-    resultHtml += `<div id="cert"></div>`; // Platzhalter für das Zertifikat
+    // --- Date-Zertifikat ---
+    // Hier werden die ausgewählten Optionen eingefügt.
+    let ct='🏆 OFFIZIELLES DATE-ZERTIFIKAT\n\nNadine ✅\nFlorian ✅\n\n📅 Datum: ' + d + '\n⏰ Uhrzeit: ' + tm + '\n✨ Aktivität: ' + activity + '\n\n--- Deine Antworten ---\n🏆 Lieblingsdate: ' + answers[0] + '\n⏰ Zeitgefühl: ' + answers[1] + '\n💭 Florian in einem Wort: ' + answers[2] + '\n📋 Treffen beschreiben: ' + answers[3] + '\n💌 Was du schätzt: ' + answers[4] + '\n💭 Worauf du dich freust: ' + answers[5] + '\n🦋 Gegenanalyse: ' + answers[6] + '\n\nNächstes Date bestätigt ❤️';
+    resultHtml += `<div id="cert" class="cert-text"></div>`; // Zertifikatstext wird hier eingefügt
+
     resultHtml += `<div id="transfer" class="left"></div>`; // Platzhalter für die simulierte Übertragung
 
     out.innerHTML = resultHtml;
 
     // --- Simulation der Datenübertragung und Zertifikat ---
-    let ct='🏆 OFFIZIELLES DATE-ZERTIFIKAT\n\nNadine ✅\nFlorian ✅\n\nDatum ✅\nUhrzeit ✅\nAktivität ✅\n\nNächstes Date bestätigt ❤️';
+    // Das Zertifikat wird hier mit den gesammelten Antworten gefüllt.
+    cert.textContent = ct;
+
     let i=0;
-    let c=setInterval(()=>{
-        cert.textContent=ct.slice(0,++i);
-        if(i>=ct.length){
+    let c=setInterval(()=>{ // Diese Intervalle sind für die Zertifikat- und Transfer-Animation
+        // Die Zertifikat-Animation ist hier nicht mehr nötig, da der Text direkt gesetzt wird.
+        // Wir können das Intervall für die Transfer-Animation nutzen.
+        if(i>=ct.length){ // Diese Bedingung wird nie erreicht, da ct direkt gesetzt wird.
             clearInterval(c);
+        }
+        i++; // Nur um das Intervall zu beenden, falls es doch benötigt wird.
+    }, 15);
 
-            let transferText = `📡 Datenübertragung ausstehend...\nVerbinde mit Florian...\n✅ Überprüfe Schmetterlings-Analyse...\n✅ Verpacke Antworten...\n✅ Übertragung bereit ❤️\n\n⚠️ Letzter Schritt erforderlich:\nDie Ergebnisse wurden vorbereitet,\naber noch nicht an Florian gesendet.\nOhne den nächsten Schritt\nbekommt er deine Antworten leider nicht 😇\n👇 Bitte jetzt übertragen 👇`;
-            let j = 0;
-            let transferWriter = setInterval(() => {
-                transfer.textContent = transferText.slice(0, ++j);
-                if (j >= transferText.length) {
-                    clearInterval(transferWriter);
 
-                    // WhatsApp Button (jetzt grün und zentriert dank .wa Klasse)
-                    const waLink = `https://api.whatsapp.com/send?phone=4915758309186&text=${encodeURIComponent(msg)}`;
-                    // Hier wird die .wa Klasse verwendet, um das korrekte Styling zu gewährleisten.
-                    transfer.innerHTML += `<br><br><a class="wa" href="${waLink}" target="_blank">📲 Antworten & Date an Florian senden</a>`;
+    let transferText = `📡 Datenübertragung ausstehend...\nVerbinde mit Florian...\n✅ Überprüfe Schmetterlings-Analyse...\n✅ Verpacke Antworten...\n✅ Übertragung bereit ❤️\n\n⚠️ Letzter Schritt erforderlich:\nDie Ergebnisse wurden vorbereitet,\naber noch nicht an Florian gesendet.\nOhne den nächsten Schritt\nbekommt er deine Antworten leider nicht 😇\n👇 Bitte jetzt übertragen 👇`;
+    let j = 0;
+    let transferWriter = setInterval(() => {
+        transfer.textContent = transferText.slice(0, ++j);
+        if (j >= transferText.length) {
+            clearInterval(transferWriter);
 
-                    // Kalender Button
-                    transfer.innerHTML += `
+            // WhatsApp Button (jetzt grün und zentriert dank .wa Klasse)
+            const waLink = `https://api.whatsapp.com/send?phone=4915758309186&text=${encodeURIComponent(msg)}`;
+            transfer.innerHTML += `<br><br><a class="wa" href="${waLink}" target="_blank">📲 Antworten & Date an Florian senden</a>`;
+
+            // Kalender Button
+            transfer.innerHTML += `
 <br><br>
 
 <button
@@ -284,8 +295,6 @@ onclick="saveCalendar()">
 Damit du unser Date nicht vergisst 🥰
 </p>
 `;
-                }
-            }, 15);
         }
     }, 15);
 }
