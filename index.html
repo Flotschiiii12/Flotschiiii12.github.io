@@ -9,7 +9,7 @@
 <div id='result' class='hidden center'><div id='out'></div></div></div>
 <script>
 let answers=[];
-// Globale Variable für Kalenderdaten
+// ✅ KALENDERDATEN GLOBAL SPEICHERN
 let calendarData = null;
 
 function show(a,b){document.getElementById(a).classList.add('hidden');document.getElementById(b).classList.remove('hidden')}
@@ -95,10 +95,15 @@ function createIcsContent(dateStr, timeStr, activity, description) {
     const endDateStr = dateStr.replace(/-/g, '');
 
     const uid = 'event-' + Date.now() + Math.random().toString(36).substring(2, 15);
-    const dtstamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0];
 
+    // ✅ DTSTAMP KORRIGIERT
+    // Korrigiertes Format für Apple Kalender
+    const dtstamp = new Date().toISOString().replace(/[-:]/g, '').replace('.000','');
+
+    // Beschreibung für ICS escapen
     let icsDescription = description.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/'/g, "\\'");
 
+    // ICS-Inhalt erstellen
     let ics = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Grasp.info//NadineDatePlanner//DE
@@ -117,6 +122,7 @@ END:VCALENDAR`;
 }
 
 // --- Funktion zum Herunterladen einer Datei ---
+// Diese Funktion wird nun von saveCalendar() verwendet, um die Datei zu erstellen und herunterzuladen.
 function downloadFile(filename, content, mimeType = 'text/plain') {
     console.log("downloadFile called with:", filename, mimeType); // Debugging
     try {
@@ -140,9 +146,12 @@ function downloadFile(filename, content, mimeType = 'text/plain') {
     }
 }
 
-// --- NEUE FUNKTION EINFÜGEN ---
+// --- NEUE KALENDERFUNKTION ---
 function saveCalendar(){
-    if(!calendarData) return; // Falls keine Daten vorhanden sind, nichts tun
+    if(!calendarData) {
+        console.error("calendarData is null, cannot save calendar.");
+        return; // Falls keine Daten vorhanden sind, nichts tun
+    }
 
     const icsContent = createIcsContent(
         calendarData.date,
@@ -151,15 +160,24 @@ function saveCalendar(){
         calendarData.description
     );
 
+    // Erstellung eines Blobs und dann eines File-Objekts
     const blob = new Blob(
         [icsContent],
         {
-            type: 'text/calendar;charset=utf-8' // Korrekter MIME-Typ für ICS
+            type:'text/calendar' // MIME-Typ für ICS
         }
     );
 
-    const url = URL.createObjectURL(blob);
+    const file = new File(
+        [blob],
+        'DateMitFlorian.ics',
+        {
+            type:'text/calendar'
+        }
+    );
 
+    // Erstellung eines temporären Links zum Herunterladen der Datei
+    const url = URL.createObjectURL(file);
     const a = document.createElement('a');
     a.href = url;
     a.download = 'DateMitFlorian.ics';
@@ -196,7 +214,7 @@ function finish(){
     // Erstellung der Nachricht für WhatsApp und die Beschreibung für ICS
     let msg=`Hey Florian ❤️\n\nIch habe JA gesagt! 🥰\n\n📅 Unser Date:\nDatum: ${d}\n\n⏰ Uhrzeit:\n${tm}\n\n✨ Aktivität:\n${activity}\n\nUnd hier noch meine Antworten 😉❤️\n\n🏆 Lieblingsdate:\n${answers[0]}\n\n⏰ Zeit bei unseren Treffen:\n${answers[1]}\n\n💭 Florian in einem Wort:\n${answers[2]}\n\n📋 Unsere bisherigen Treffen:\n${answers[3]}\n\n💌 Was ich an Florian am meisten schätze:\n${answers[4]}\n\n💭 Worauf ich mich am meisten freue:\n${answers[5]}\n\n🦋 Gegenanalyse:\n${answers[6]}`;
 
-    // --- FINISH() ERWEITERN ---
+    // ✅ FINISH() ERWEITERT
     // Globale Variable mit den Daten für die Kalenderfunktion befüllen
     calendarData = {
         date: d,
@@ -204,9 +222,6 @@ function finish(){
         activity: activity,
         description: msg
     };
-
-    // ICS-Inhalt wird nicht mehr direkt hier generiert, sondern von saveCalendar()
-    // const icsContent = createIcsContent(d, tm, activity, msg); // Diese Zeile wird nicht mehr benötigt
 
     show('plan','result');
 
@@ -246,7 +261,6 @@ function finish(){
                     transfer.innerHTML += `<br><br><a class="btn" href="${waLink}" target="_blank">📲 Antworten & Date an Florian senden</a>`;
 
                     // --- NEUEN KALENDERBUTTON EINFÜGEN ---
-                    // Der alte Kalenderbutton wurde entfernt.
                     // Dieser neue Button ruft die saveCalendar() Funktion auf.
                     transfer.innerHTML += `
 <br><br>
@@ -264,28 +278,4 @@ Damit du unser Date nicht vergisst 🥰
         }
     }, 15);
 }
-
-// --- CSS AKTUALISIEREN ---
-// Die .cal Klasse wurde oben im <style> Tag aktualisiert.
-// Hier ist der relevante Teil des Stylesheets:
-/*
-.cal{
-    display:block;
-    width:100%;
-    margin-top:10px;
-    padding:14px;
-    border:none;
-    border-radius:12px;
-    background:#4285f4;
-    color:white;
-    font-size:16px;
-    cursor:pointer;
-}
-.cal:hover{
-    background:#357a3c; // Optional: Hover-Effekt
-}
-.cal:active{
-    background:#2d6a33; // Optional: Active-Effekt
-}
-*/
 </script></body></html>
