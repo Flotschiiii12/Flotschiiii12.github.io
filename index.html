@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang='de'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Nadine V8</title><style>html,body{margin:0;overflow-x:hidden;font-family:Arial,sans-serif;background:linear-gradient(135deg,#ff5f8a,#ff7eb3,#ffc2d1)}.card{max-width:650px;margin:20px auto;background:#fff;border-radius:25px;padding:25px;box-sizing:border-box}.center{text-align:center}.left{text-align:left}.hidden{display:none}.btn{background:#ff2f6d;color:#fff;border:none;padding:12px 18px;border-radius:12px;cursor:pointer}.btnGray{background:#ddd;color:#333}.field{width:100%;padding:12px;margin-top:10px;box-sizing:border-box;border:1px solid #ddd;border-radius:12px}.row{margin:12px 0}.wa{display:block;margin:20px auto;width:90%;max-width:420px;padding:14px;border-radius:12px;background:#25D366;color:white;text-align:center;text-decoration:none;font-weight:bold}.cal{display:block;width:100%;margin-top:10px;padding:14px;border:none;border-radius:12px;background:#4285f4;color:white;font-size:16px;cursor:pointer}.cal:hover{background:#357a3c}.cal:active{background:#2d6a33}#txt,#cert,#transfer{white-space:pre-wrap;word-break:break-word}.centered-text{text-align:center}.left-aligned-in-center{text-align:left;margin-left:auto;margin-right:auto;max-width:90%; /* Passt sich der .wa-Breite an */}.cert-text{text-align:center; /* Zentriert den Zertifikatstext */}</style></head><body><div class='card'>
+<!DOCTYPE html><html lang='de'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Nadine V8</title><style>html,body{margin:0;overflow-x:hidden;font-family:Arial,sans-serif;background:linear-gradient(135deg,#ff5f8a,#ff7eb3,#ffc2d1)}.card{max-width:650px;margin:20px auto;background:#fff;border-radius:25px;padding:25px;box-sizing:border-box}.center{text-align:center}.left{text-align:left}.hidden{display:none}.btn{background:#ff2f6d;color:#fff;border:none;padding:12px 18px;border-radius:12px;cursor:pointer}.btnGray{background:#ddd;color:#333}.field{width:100%;padding:12px;margin-top:10px;box-sizing:border-box;border:1px solid #ddd;border-radius:12px}.row{margin:12px 0}.wa{display:block;margin:20px auto;width:90%;max-width:420px;padding:14px;border-radius:12px;background:#25D366;color:white;text-align:center;text-decoration:none;font-weight:bold}.cal{display:block;width:100%;margin-top:10px;padding:14px;border:none;border-radius:12px;background:#4285f4;color:white;font-size:16px;cursor:pointer}.cal:hover{background:#357a3c}.cal:active{background:#2d6a33}#txt,#cert,#transfer{white-space:pre-wrap;word-break:break-word}.centered-text{text-align:center}.left-aligned-in-center{text-align:left;margin-left:auto;margin-right:auto;max-width:90%;}.cert-text{text-align:center; /* Zentriert den Zertifikatstext */}.canvas-container{margin-top:20px; border: 1px solid #eee; padding: 10px; border-radius: 12px; background-color: #f9f9f9;}.download-btn{background:#ff2f6d;color:#fff;border:none;padding:10px 15px;border-radius:10px;cursor:pointer;font-size:14px;margin-top:15px;display:inline-block;text-decoration:none;}</style></head><body><div class='card'>
 <div id='intro' class='center'><h1>❤️ Nadine ❤️</h1><p>Hi Nadine 😊</p><p>Ich möchte dich etwas fragen ❤️</p><p><b>Fun Fact:</b><br>Florian hat diese Webseite wahrscheinlich öfter getestet als nötig 😇❤️</p><button class='btn' onclick="show('intro','question')">Weiter ❤️</button></div>
 <div id='question' class='center hidden'><h2>Möchtest du mit mir unser nächstes Date planen? 🥺</h2><button class='btn' onclick='showAnalysis()'>Ja 😍</button> <button id='noBtn' class='btn btnGray'>Nein 🙈</button></div>
 <div id='analysis' class='hidden left'><div id='txt'></div><br><button id='analysisBtn' class='btn hidden' onclick="show('analysis','stats')">Weiter ❤️</button></div>
@@ -236,7 +236,6 @@ function finish(){
     let resultHtml = `<h2>✅ DATE BESTÄTIGT ❤️</h2>`;
 
     // --- Kleine Nachricht ---
-    // Diese wird nun mit einer Klasse versehen, die sie zentriert.
     resultHtml += `<div class="left-aligned-in-center">
         <h3>💌 Kleine Nachricht</h3>
         <br>
@@ -256,20 +255,16 @@ function finish(){
     out.innerHTML = resultHtml;
 
     // --- Simulation der Datenübertragung und Zertifikat ---
-    // Das Zertifikat wird hier mit den gesammelten Antworten gefüllt.
-    cert.textContent = ct;
-
-    let i=0;
-    let c=setInterval(()=>{ // Diese Intervalle sind für die Zertifikat- und Transfer-Animation
-        // Die Zertifikat-Animation ist hier nicht mehr nötig, da der Text direkt gesetzt wird.
-        // Wir können das Intervall für die Transfer-Animation nutzen.
-        if(i>=ct.length){ // Diese Bedingung wird nie erreicht, da ct direkt gesetzt wird.
-            clearInterval(c);
+    // Zertifikat mit Schreibmaschinen-Effekt
+    let certTextElement = document.getElementById('cert');
+    let certAnimationInterval = setInterval(()=>{
+        certTextElement.textContent = ct.slice(0, certTextElement.textContent.length + 1);
+        if (certTextElement.textContent.length >= ct.length) {
+            clearInterval(certAnimationInterval);
         }
-        i++; // Nur um das Intervall zu beenden, falls es doch benötigt wird.
-    }, 15);
+    }, 15); // Geschwindigkeit der Schreibmaschine
 
-
+    // Transfer-Simulation
     let transferText = `📡 Datenübertragung ausstehend...\nVerbinde mit Florian...\n✅ Überprüfe Schmetterlings-Analyse...\n✅ Verpacke Antworten...\n✅ Übertragung bereit ❤️\n\n⚠️ Letzter Schritt erforderlich:\nDie Ergebnisse wurden vorbereitet,\naber noch nicht an Florian gesendet.\nOhne den nächsten Schritt\nbekommt er deine Antworten leider nicht 😇\n👇 Bitte jetzt übertragen 👇`;
     let j = 0;
     let transferWriter = setInterval(() => {
@@ -295,7 +290,125 @@ onclick="saveCalendar()">
 Damit du unser Date nicht vergisst 🥰
 </p>
 `;
+            // --- NEUER BUTTON ZUM DOWNLOAD DES ZERTIFIKATS ALS BILD ---
+            transfer.innerHTML += `
+<br><br>
+<button class="btn download-btn" id="downloadCertBtn">🖼️ Zertifikat als Bild herunterladen</button>
+`;
+            // Event Listener für den neuen Download-Button hinzufügen
+            document.getElementById('downloadCertBtn').addEventListener('click', downloadCertificateAsImage);
         }
     }, 15);
 }
+
+// --- Funktion zum Zeichnen des Zertifikats auf ein Canvas ---
+function drawCertificateOnCanvas() {
+    const canvas = document.getElementById('certificateCanvas');
+    if (!canvas) {
+        // Füge das Canvas-Element dynamisch hinzu, falls es nicht existiert
+        canvas = document.createElement('canvas');
+        canvas.id = 'certificateCanvas';
+        canvas.style.display = 'none'; // Versteckt das Canvas selbst
+        document.body.appendChild(canvas);
+    }
+    const ctx = canvas.getContext('2d');
+
+    // Zertifikatstext aus dem 'cert' Element holen
+    const certificateText = document.getElementById('cert').textContent;
+    const lines = certificateText.split('\n');
+
+    // Canvas-Dimensionen und Styling
+    const canvasWidth = 600;
+    const canvasHeight = 800; // Muss angepasst werden, je nach Textmenge
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+
+    // Hintergrund zeichnen (z.B. ein sanfter Farbverlauf)
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvasHeight);
+    gradient.addColorStop(0, '#ffc2d1'); // Helles Rosa oben
+    gradient.addColorStop(1, '#ff7eb3'); // Dunkleres Rosa unten
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+    // Styling für den Text
+    ctx.fillStyle = '#fff'; // Weißer Text
+    ctx.font = 'bold 24px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+
+    const margin = 40;
+    const lineHeight = 35;
+    let currentY = margin + 50; // Startposition für den Titel
+
+    // Titel zeichnen
+    ctx.font = 'bold 36px Arial';
+    ctx.fillText('🏆 OFFIZIELLES DATE-ZERTIFIKAT 🏆', canvasWidth / 2, currentY);
+    currentY += lineHeight * 2;
+
+    // Daten zeichnen
+    ctx.font = 'bold 20px Arial';
+    ctx.fillStyle = '#fff'; // Weißer Text
+    ctx.fillText(`Nadine ✅  Florian ✅`, canvasWidth / 2, currentY);
+    currentY += lineHeight;
+    ctx.fillText(`📅 Datum: ${calendarData.date}`, canvasWidth / 2, currentY);
+    currentY += lineHeight;
+    ctx.fillText(`⏰ Uhrzeit: ${calendarData.time}`, canvasWidth / 2, currentY);
+    currentY += lineHeight;
+    ctx.fillText(`✨ Aktivität: ${calendarData.activity}`, canvasWidth / 2, currentY);
+    currentY += lineHeight * 2;
+
+    // Antworten zeichnen
+    ctx.font = 'bold 18px Arial';
+    ctx.fillStyle = '#fff';
+    ctx.fillText('--- Deine Antworten ---', canvasWidth / 2, currentY);
+    currentY += lineHeight;
+
+    const answerLines = [
+        `🏆 Lieblingsdate: ${answers[0]}`,
+        `⏰ Zeitgefühl: ${answers[1]}`,
+        `💭 Florian in einem Wort: ${answers[2]}`,
+        `📋 Treffen beschreiben: ${answers[3]}`,
+        `💌 Was du schätzt: ${answers[4]}`,
+        `💭 Worauf du dich freust: ${answers[5]}`,
+        `🦋 Gegenanalyse: ${answers[6]}`
+    ];
+
+    answerLines.forEach(line => {
+        // Hier muss die Textbreite geprüft und ggf. umgebrochen werden,
+        // aber für eine einfache Darstellung zeichnen wir sie direkt.
+        // Für komplexere Umbrüche müsste man die Textbreite messen.
+        ctx.fillText(line, canvasWidth / 2, currentY);
+        currentY += lineHeight;
+    });
+    currentY += lineHeight;
+
+    ctx.font = 'italic 16px Arial';
+    ctx.fillStyle = '#eee';
+    ctx.fillText('Nächstes Date dringend empfohlen ❤️', canvasWidth / 2, currentY);
+
+    // Rückgabe des Canvas-Elements, damit es in der Download-Funktion verwendet werden kann
+    return canvas;
+}
+
+// --- Funktion zum Herunterladen des Zertifikats als Bild ---
+function downloadCertificateAsImage() {
+    const canvas = drawCertificateOnCanvas();
+    if (!canvas) return;
+
+    // Konvertiere Canvas zu PNG Data URL
+    const dataURL = canvas.toDataURL('image/png'); // Oder 'image/jpeg'
+
+    // Erstelle einen temporären Link zum Herunterladen
+    const a = document.createElement('a');
+    a.href = dataURL;
+    a.download = 'DateZertifikat.png'; // Dateiname für den Download
+
+    document.body.appendChild(a);
+    a.click();
+
+    // Cleanup
+    document.body.removeChild(a);
+    // URL.revokeObjectURL(dataURL); // dataURL muss nicht revokt werden
+}
+
 </script></body></html>
