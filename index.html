@@ -17,7 +17,6 @@ html,body{margin:0;overflow-x:hidden;font-family:-apple-system, BlinkMacSystemFo
     <option value='5'>🥾 Wandern (ca. 2-4 Stunden)</option>
     <option value='6'>🎯 Dart bei dir (ca. 1-2 Stunden)</option>
     <option value='7'>🏊 Baden (ca. 2-3 Stunden)</option>
-    <option value='8'>🎉 Gemeinsam Feiern (Open End)</option>
     <option value='99'>✏️ Etwas anderes ... (Open End)</option>
 </select>
 <input class='field hidden' id='otherActivity' placeholder='Was hast du im Kopf? ❤️'><button class='btn' onclick='finish()'>Date bestätigen ❤️</button></div>
@@ -149,7 +148,8 @@ function nextQ(){
 }
 function toggleOther(){
     const o=document.getElementById('otherActivity');
-    if(document.getElementById('act').value==='✏️ Etwas anderes ...'){
+    // Prüfe, ob die ausgewählte Option "Etwas anderes..." ist
+    if(document.getElementById('act').value==='✏️ Etwas anderes ...'){ // Annahme: 'act' ist immer noch die ID des Select-Elements für Aktivitäten
         o.classList.remove('hidden');
         o.setAttribute('required', '');
     } else {
@@ -173,8 +173,6 @@ function createIcsContent(
         '00';
 
     // Dauer berechnen
-    let endHours = parseInt(timeStr.split(':')[0]);
-    let endMinutes = parseInt(timeStr.split(':')[1]);
     let duration = parseInt(durationHours); // Dauer in Stunden
 
     // "Open End" behandeln: Setze eine sehr lange Dauer, z.B. 24 Stunden
@@ -188,7 +186,7 @@ function createIcsContent(
 
     const end =
         endDate.getFullYear() +
-        String(endDate.getMonth()+1).padStart(2,'0') +
+        String(endDate.getMonth()+1).padStart(2,'0') + // Monate sind 0-basiert, daher +1
         String(endDate.getDate()).padStart(2,'0') +
         'T' +
         String(endDate.getHours()).padStart(2,'0') +
@@ -279,7 +277,7 @@ function saveCalendar(){
 
 
 function finish(){
-    let activity=document.getElementById('act').value;
+    let activity=document.getElementById('act').value; // Aktivität wird immer noch aus dem alten 'act' Select ausgelesen
     const otherInput = document.getElementById('otherActivity');
     if(activity==='✏️ Etwas anderes ...'){
         if (!otherInput.value.trim()) {
