@@ -11,10 +11,7 @@
 let answers=[];
 function show(a,b){document.getElementById(a).classList.add('hidden');document.getElementById(b).classList.remove('hidden')}
 
-// --- Anpassungen für den "Nein"-Button ---
 const nt=['Nein 🙈','Sicher? 🥺','Wirklich? 😢','Ganz sicher? 😭','Die Statistik empfiehlt Ja 📊','Florian wäre traurig 💔','Vielleicht doch Ja? 😇'];let ni=0;
-// Der "Nein"-Button wird jetzt so gestaltet, dass er nach mehrmaligem Klicken verschwindet,
-// aber er löst keine andere Aktion aus, um den Benutzer nicht zu zwingen.
 noBtn.onclick=()=>{ni++;if(ni<nt.length)noBtn.innerText=nt[ni];else noBtn.style.display='none'};
 
 function showAnalysis(){
@@ -25,7 +22,7 @@ function showAnalysis(){
         txt.textContent=t.slice(0,++i);
         if(i>=t.length){
             clearInterval(v);
-            analysisBtn.classList.remove('hidden'); // Button wird sichtbar, wenn Text fertig ist
+            analysisBtn.classList.remove('hidden');
         }
     },15);
 }
@@ -43,10 +40,10 @@ const qs=[
 ];
 let qi=0;
 function renderQ(){
-    progress.textContent='Frage '+(qi+1)+' von '+qs.length+' ❤️'; // Dynamische Anzahl Fragen
+    progress.textContent='Frage '+(qi+1)+' von '+qs.length+' ❤️';
     let d=qs[qi];
     if(d[1]==='text'){
-        q.innerHTML='<h3>'+d[0]+'</h3><textarea class="field" id="t" rows="4"></textarea><button class="btn" onclick="nextQ()">Weiter</button>'; // textarea mit mehr Zeilen
+        q.innerHTML='<h3>'+d[0]+'</h3><textarea class="field" id="t" rows="4"></textarea><button class="btn" onclick="nextQ()">Weiter</button>';
     } else {
         let h='<h3>'+d[0]+'</h3>';
         d[1].forEach(v=>h+='<div class=row><label><input type=radio name=r value="'+v+'"> '+v+'</label></div>');
@@ -57,11 +54,11 @@ function renderQ(){
 function nextQ(){
     let d=qs[qi];
     if(d[1]==='text'){
-        answers.push(document.getElementById('t').value.trim() || '-'); // .trim() entfernt Leerzeichen, '-' wenn leer
+        answers.push(document.getElementById('t').value.trim() || '-');
     } else {
         let r=document.querySelector('input[name=r]:checked');
         if(!r) {
-            alert('Bitte wähle eine Option!'); // Fehlermeldung, wenn nichts ausgewählt
+            alert('Bitte wähle eine Option! ❤️');
             return;
         }
         answers.push(r.value);
@@ -74,18 +71,70 @@ function toggleOther(){
     const o=document.getElementById('otherActivity');
     if(document.getElementById('act').value==='✏️ Etwas anderes ...'){
         o.classList.remove('hidden');
-        o.setAttribute('required', ''); // Feld als erforderlich markieren
+        o.setAttribute('required', '');
     } else {
         o.classList.add('hidden');
-        o.removeAttribute('required'); // Feld nicht mehr erforderlich
+        o.removeAttribute('required');
     }
+}
+
+// --- Funktion zur Erstellung der ICS-Datei ---
+function createIcsContent(dateStr, timeStr, activity, description) {
+    // Datum und Zeit für ICS formatieren (YYYYMMDDTHHMMSS)
+    // Wir nehmen an, dass die Eingabe im lokalen Format ist und fügen keine Zeitzone hinzu,
+    // damit der Kalender die lokale Zeit des Benutzers verwendet.
+    const dateTimeStr = dateStr.replace(/-/g, '') + 'T' + timeStr.replace(/:/g, '');
+
+    // Eine ungefähre Endzeit festlegen (z.B. 1 Stunde Dauer)
+    // Für eine genauere Dauer müsste man die Aktivität analysieren oder eine Dauer eingeben lassen.
+    const durationHours = 1;
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    const endHours = (hours + durationHours) % 24;
+    const endMinutes = minutes;
+    const endTimeStr = String(endHours).padStart(2, '0') + String(endMinutes).padStart(2, '0');
+    const endDateStr = dateStr.replace(/-/g, ''); // Datum bleibt gleich, nur Zeit ändert sich
+
+    // Eindeutige ID für das Event (kann eine Kombination aus Zeitstempel und Zufall sein)
+    const uid = 'event-' + Date.now() + Math.random().toString(36).substring(2, 15);
+
+    // Aktueller Zeitstempel für DTSTAMP
+    const dtstamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0]; // YYYYMMDDTHHMMSS
+
+    // ICS-Inhalt erstellen
+    let ics = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Grasp.info//NadineDatePlanner//DE
+BEGIN:VEVENT
+UID:${uid}
+DTSTAMP:${dtstamp}
+DTSTART:${dateTimeStr}
+DTEND:${endDateStr}T${endTimeStr}
+SUMMARY:${activity}
+DESCRIPTION:${description.replace(/\n/g, '\\n')}
+END:VEVENT
+END:VCALENDAR`;
+
+    return ics;
+}
+
+// --- Funktion zum Herunterladen einer Datei ---
+function downloadFile(filename, content, mimeType = 'text/plain') {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 
 function finish(){
     let activity=document.getElementById('act').value;
+    const otherInput = document.getElementById('otherActivity');
     if(activity==='✏️ Etwas anderes ...'){
-        const otherInput = document.getElementById('otherActivity');
-        if (!otherInput.value.trim()) { // Prüfen, ob das "andere" Feld ausgefüllt ist
+        if (!otherInput.value.trim()) {
             alert('Bitte gib an, was du im Sinn hast! ❤️');
             return;
         }
@@ -94,31 +143,27 @@ function finish(){
     let d=document.getElementById('date').value;
     let tm=document.getElementById('time').value;
 
-    // Validierung für Datum und Zeit
     if (!d || !tm) {
         alert('Bitte wähle ein Datum und eine Uhrzeit für unser Date! ❤️');
         return;
     }
 
-    // Erstellung der Nachricht für WhatsApp
+    // Erstellung der Nachricht für WhatsApp und die Beschreibung für ICS
     let msg=`Hey Florian ❤️\n\nIch habe JA gesagt! 🥰\n\n📅 Unser Date:\nDatum: ${d}\n\n⏰ Uhrzeit:\n${tm}\n\n✨ Aktivität:\n${activity}\n\nUnd hier noch meine Antworten 😉❤️\n\n🏆 Lieblingsdate:\n${answers[0]}\n\n⏰ Zeit bei unseren Treffen:\n${answers[1]}\n\n💭 Florian in einem Wort:\n${answers[2]}\n\n📋 Unsere bisherigen Treffen:\n${answers[3]}\n\n💌 Was ich an Florian am meisten schätze:\n${answers[4]}\n\n💭 Worauf ich mich am meisten freue:\n${answers[5]}\n\n🦋 Gegenanalyse:\n${answers[6]}`;
 
-    // WhatsApp Link (Telefonnummer ist hardcoded, wie im Original)
-    let wa='https://api.whatsapp.com/send?phone=4915758309186&text='+encodeURIComponent(msg);
+    // ICS-Inhalt generieren
+    const icsContent = createIcsContent(d, tm, activity, msg);
 
     show('plan','result');
 
-    // --- Überarbeitete Anzeige des Ergebnisses ---
     let resultHtml = `<h2>✅ DATE BESTÄTIGT ❤️</h2>`;
 
-    // ICS Download Link (verbessert)
-    // Erstellt einen einfachen Text-ICS-String. Für komplexere ICS-Dateien wäre mehr Logik nötig.
-    // Der Download-Link selbst ist hier nur ein Platzhalter, da die Erstellung einer vollständigen ICS-Datei komplex ist.
-    // Stattdessen wird ein Link zur WhatsApp-Nachricht angezeigt.
-    // Wenn ein echter ICS-Download gewünscht ist, müsste der Inhalt dynamisch generiert und als Blob verarbeitet werden.
-    // Fürs Erste konzentrieren wir uns auf die WhatsApp-Nachricht.
+    // Link zum Senden der WhatsApp-Nachricht
+    const waLink = `https://api.whatsapp.com/send?phone=4915758309186&text=${encodeURIComponent(msg)}`;
+    resultHtml += `<a class="wa" href="${waLink}" target="_blank">📲 Antworten & Date an Florian senden</a>`;
 
-    resultHtml += `<a class="cal" href="${wa}" target="_blank">📲 Antworten & Date an Florian senden</a>`; // Direkter Link zur WhatsApp-Nachricht
+    // Link zum Herunterladen der ICS-Datei
+    resultHtml += `<button class="cal" onclick="downloadFile('DateMitFlorian.ics', createIcsContent('${d}', '${tm}', '${activity}', '${msg.replace(/'/g, "\\'")}'))">📅 Als Kalenderereignis hinzufügen</button>`; // Button, der die Download-Funktion auslöst
 
     resultHtml += `<div class="left">
         <h3>💌 Kleine Nachricht</h3>
@@ -129,8 +174,8 @@ function finish(){
         (Und ja, das war die Arbeit wert 🥰)
     </div>`;
 
-    resultHtml += `<div id="cert"></div>`; // Platzhalter für Zertifikat
-    resultHtml += `<div id="transfer" class="left"></div>`; // Platzhalter für Datenübertragung
+    resultHtml += `<div id="cert"></div>`;
+    resultHtml += `<div id="transfer" class="left"></div>`;
 
     out.innerHTML = resultHtml;
 
@@ -142,17 +187,16 @@ function finish(){
         if(i>=ct.length){
             clearInterval(c);
 
-            // Simulation der Datenübertragung
             let transferText = `📡 Datenübertragung ausstehend...\nVerbinde mit Florian...\n✅ Überprüfe Schmetterlings-Analyse...\n✅ Verpacke Antworten...\n✅ Übertragung bereit ❤️\n\n⚠️ Letzter Schritt erforderlich:\nDie Ergebnisse wurden vorbereitet,\naber noch nicht an Florian gesendet.\nOhne den nächsten Schritt\nbekommt er deine Antworten leider nicht 😇\n👇 Bitte jetzt übertragen 👇`;
             let j = 0;
             let transferWriter = setInterval(() => {
                 transfer.textContent = transferText.slice(0, ++j);
                 if (j >= transferText.length) {
                     clearInterval(transferWriter);
-                    // Hier wird der Link korrekt als HTML eingefügt, nicht als Text
-                    transfer.innerHTML += `<br><br><a class="btn" href="${wa}" target="_blank">📲 Antworten & Date an Florian senden</a>`;
+                    // Der Link zum Senden der WhatsApp-Nachricht wird hier erneut eingefügt
+                    transfer.innerHTML += `<br><br><a class="btn" href="${waLink}" target="_blank">📲 Antworten & Date an Florian senden</a>`;
                 }
-            }, 15); // Etwas langsamer für bessere Lesbarkeit
+            }, 15);
         }
     }, 15);
 }
