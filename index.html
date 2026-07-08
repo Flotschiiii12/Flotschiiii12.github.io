@@ -91,6 +91,9 @@ function createIcsContent(dateStr, timeStr, activity, description) {
     const uid = 'event-' + Date.now() + Math.random().toString(36).substring(2, 15);
     const dtstamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0];
 
+    // Beschreibung für ICS escapen, um Probleme mit Sonderzeichen zu vermeiden
+    let icsDescription = description.replace(/\n/g, '\\n').replace(/'/g, "\\'").replace(/,/g, '\\,');
+
     let ics = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Grasp.info//NadineDatePlanner//DE
@@ -100,7 +103,7 @@ DTSTAMP:${dtstamp}
 DTSTART:${dateTimeStr}
 DTEND:${endDateStr}T${endTimeStr}
 SUMMARY:${activity}
-DESCRIPTION:${description.replace(/\n/g, '\\n').replace(/'/g, "\\'")}
+DESCRIPTION:${icsDescription}
 END:VEVENT
 END:VCALENDAR`;
 
@@ -148,20 +151,8 @@ function finish(){
 
     let resultHtml = `<h2>✅ DATE BESTÄTIGT ❤️</h2>`;
 
-    // WhatsApp Link (jetzt der einzige und prominente Button)
-    const waLink = `https://api.whatsapp.com/send?phone=4915758309186&text=${encodeURIComponent(msg)}`;
-    // Der rote Button (ursprünglich "Antworten & Date an Florian senden") wird hier als Hauptaktion platziert.
-    resultHtml += `<a class="btn" href="${waLink}" target="_blank">📲 Antworten & Date an Florian senden</a>`; // Roter Button, wie gewünscht
-
-    // Kalender-Button darunter
-    // Der onclick-Handler wird direkt hier aufgerufen, um die ICS-Datei zu generieren und herunterzuladen.
-    // Wir escapen die Anführungszeichen in der Nachricht, damit sie korrekt im String landen.
-    resultHtml += `<button class="cal" onclick="downloadFile('DateMitFlorian.ics', createIcsContent('${d}', '${tm}', '${activity}', '${msg.replace(/'/g, "\\'")}'))">📅 Als Kalenderereignis hinzufügen</button>`;
-
-    // Hinweis für den Kalender-Button
-    resultHtml += `<p style="font-size: 0.9em; color: #555;">(Damit du es nicht vergisst! 😉)</p>`;
-
-
+    // Die "Kleinen Nachricht" und das Zertifikat werden nun direkt hier eingefügt,
+    // bevor die simulierte Datenübertragung beginnt.
     resultHtml += `<div class="left">
         <h3>💌 Kleine Nachricht</h3>
         <br>
@@ -172,7 +163,7 @@ function finish(){
     </div>`;
 
     resultHtml += `<div id="cert"></div>`;
-    resultHtml += `<div id="transfer" class="left"></div>`;
+    resultHtml += `<div id="transfer" class="left"></div>`; // Platzhalter für die simulierte Übertragung
 
     out.innerHTML = resultHtml;
 
@@ -184,15 +175,23 @@ function finish(){
         if(i>=ct.length){
             clearInterval(c);
 
+            // Der Text für die simulierte Datenübertragung
             let transferText = `📡 Datenübertragung ausstehend...\nVerbinde mit Florian...\n✅ Überprüfe Schmetterlings-Analyse...\n✅ Verpacke Antworten...\n✅ Übertragung bereit ❤️\n\n⚠️ Letzter Schritt erforderlich:\nDie Ergebnisse wurden vorbereitet,\naber noch nicht an Florian gesendet.\nOhne den nächsten Schritt\nbekommt er deine Antworten leider nicht 😇\n👇 Bitte jetzt übertragen 👇`;
             let j = 0;
             let transferWriter = setInterval(() => {
                 transfer.textContent = transferText.slice(0, ++j);
                 if (j >= transferText.length) {
                     clearInterval(transferWriter);
-                    // Der Link zum Senden der WhatsApp-Nachricht wird hier erneut eingefügt,
-                    // um die Simulation der Übertragung abzuschließen.
+
+                    // WhatsApp Button (roter Button) wird hier eingefügt
+                    const waLink = `https://api.whatsapp.com/send?phone=4915758309186&text=${encodeURIComponent(msg)}`;
                     transfer.innerHTML += `<br><br><a class="btn" href="${waLink}" target="_blank">📲 Antworten & Date an Florian senden</a>`;
+
+                    // Kalender Button wird direkt darunter eingefügt
+                    transfer.innerHTML += `<button class="cal" onclick="downloadFile('DateMitFlorian.ics', createIcsContent('${d}', '${tm}', '${activity}', '${msg.replace(/'/g, "\\'")}'))">📅 Als Kalenderereignis hinzufügen</button>`;
+
+                    // Hinweis für den Kalender-Button
+                    transfer.innerHTML += `<p style="font-size: 0.9em; color: #555;">(Damit du es nicht vergisst! 😉)</p>`;
                 }
             }, 15);
         }
